@@ -2,39 +2,58 @@ PODS:
   - Flutter (1.0.0)
   - flutter_config (0.0.1):
     - Flutter
+  - flutter_secure_storage (6.0.0):
+    - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - integration_test (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
-  - "permission_handler (5.1.0+2)":
+  - permission_handler_apple (9.0.4):
     - Flutter
+  - Toast (4.0.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_config (from `.symlinks/plugins/flutter_config/ios`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Toast
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_config:
     :path: ".symlinks/plugins/flutter_config/ios"
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_config: 2226c1df19c78fe34a05eb7f1363445f18e76fc1
+  flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
+  fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: de482529810d31c8802b6be0fd93c8c3e038be64
+PODFILE CHECKSUM: 0649db66e3e5e19c303123296d621da53d2eeafc
 
 COCOAPODS: 1.11.3

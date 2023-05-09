@@ -1,5 +1,5 @@
-[![CI](https://github.com/hoangnguyen92dn/survey-flutter-ic/actions/workflows/test.yml/badge.svg)](https://github.com/hoangnguyen92dn/survey-flutter-ic/actions/workflows/test.yml)
-[![codecov](https://codecov.io/github/hoangnguyen92dn/survey-flutter-ic/branch/main/graph/badge.svg?token=XHHBI111RO)](https://codecov.io/github/hoangnguyen92dn/survey-flutter-ic)
+[![CI](https://github.com/Wadeewee/survey-flutter-ic-pooh/actions/workflows/test.yml/badge.svg)](https://github.com/Wadeewee/survey-flutter-ic-pooh/actions/workflows/test.yml)
+[![codecov](https://codecov.io/github/Wadeewee/survey-flutter-ic-pooh/branch/main/graph/badge.svg?token=XHHBI111RO)](https://codecov.io/github/Wadeewee/survey-flutter-ic-pooh)
 
 # Survey Flutter
 
@@ -9,7 +9,7 @@ Survey application built with Flutter
 
 Clone the repository
 
-`git clone git@github.com:hoangnguyen92dn/survey-flutter-ic.git`
+`git clone git@github.com:Wadeewee/survey-flutter-ic-pooh.git`
 
 ## Prerequisite
 
