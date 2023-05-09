@@ -3,7 +3,7 @@ on:
   # Trigger the workflow on push action
   push:
     branches:
-      - 'release/**'
+      - test
 
 jobs:
   build_and_upload_to_testflight:
