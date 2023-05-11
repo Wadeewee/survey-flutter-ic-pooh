@@ -1,31 +1,40 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:injectable/injectable.dart';
 import 'package:survey_flutter_ic/ui/home/home_screen.dart';
 import 'package:survey_flutter_ic/ui/signin/sign_in_screen.dart';
 import 'package:survey_flutter_ic/ui/splash/splash_screen.dart';
 
-const routePathRootScreen = '/';
-const routePathHomeScreen = '/home';
-const routePathSignInScreen = '/sign_in';
+enum RoutePath {
+  root('/', '/'),
+  home('/home', 'home'),
+  signIn('/sign_in', 'sign_in');
 
-// TODO Extract to class and inject by GetIt
-GoRouter router([String? initialLocation]) => GoRouter(
-      initialLocation: initialLocation ?? routePathRootScreen,
-      routes: <GoRoute>[
-        GoRoute(
-          path: routePathRootScreen,
-          builder: (BuildContext context, GoRouterState state) =>
-              const SplashScreen(),
-        ),
-        GoRoute(
-          path: routePathSignInScreen,
-          builder: (BuildContext context, GoRouterState state) =>
-              const SignInScreen(),
-        ),
-        GoRoute(
-          path: routePathHomeScreen,
-          builder: (BuildContext context, GoRouterState state) =>
-              const HomeScreen(),
-        ),
-      ],
-    );
+  const RoutePath(this.path, this.name);
+
+  final String path;
+  final String name;
+}
+
+@Singleton()
+class AppRouter {
+  GoRouter router([String? initialLocation]) => GoRouter(
+        initialLocation: initialLocation ?? RoutePath.root.path,
+        routes: <GoRoute>[
+          GoRoute(
+            name: RoutePath.root.name,
+            path: RoutePath.root.path,
+            builder: (_, __) => const SplashScreen(),
+          ),
+          GoRoute(
+            name: RoutePath.home.name,
+            path: RoutePath.home.path,
+            builder: (_, __) => const HomeScreen(),
+          ),
+          GoRoute(
+            name: RoutePath.signIn.name,
+            path: RoutePath.signIn.path,
+            builder: (_, __) => const SignInScreen(),
+          ),
+        ],
+      );
+}

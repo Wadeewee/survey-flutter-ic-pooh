@@ -20,15 +20,17 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = getIt.get<AppRouter>().router();
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: MaterialApp.router(
         theme: AppTheme.theme(AppColorScheme.light()),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        routeInformationProvider: router().routeInformationProvider,
-        routeInformationParser: router().routeInformationParser,
-        routerDelegate: router().routerDelegate,
+        routeInformationProvider: router.routeInformationProvider,
+        routeInformationParser: router.routeInformationParser,
+        routerDelegate: router.routerDelegate,
       ),
     );
   }
