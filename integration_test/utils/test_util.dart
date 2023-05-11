@@ -32,13 +32,15 @@ class TestUtil {
   static Widget pumpWidgetWithRoutePath(String route) {
     _initDependencies();
 
+    final router = getIt.get<AppRouter>().router(route);
+
     return ProviderScope(
         child: MaterialApp.router(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routeInformationProvider: router(route).routeInformationProvider,
-      routeInformationParser: router(route).routeInformationParser,
-      routerDelegate: router(route).routerDelegate,
+      routeInformationProvider: router.routeInformationProvider,
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
     ));
   }
 
