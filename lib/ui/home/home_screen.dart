@@ -106,6 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Consumer(
               builder: (context, widgetRef, _) {
                 return HomeHeader(
+                  // TODO: Move logic to VM on integration task
                   date: DateTime.now().getFormattedString(),
                   avatar: widgetRef.watch(_profileAvatarProvider),
                 );
