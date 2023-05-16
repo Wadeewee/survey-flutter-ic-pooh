@@ -26,7 +26,8 @@ void main() {
     test(
         'When calling GetSurveys successfully, it emits the corresponding AuthModel',
         () async {
-      final json = await FileUtils.loadFile('mock_response/surveys.json');
+      final json = await FileUtils.loadFile(
+          'test_resource/fake_response/fake_surveys_response.json');
       final expected = SurveysResponse.fromJson(json);
 
       when(mockSurveyService.getSurveys(any, any))

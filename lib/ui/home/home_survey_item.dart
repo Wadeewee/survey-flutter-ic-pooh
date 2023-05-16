@@ -22,7 +22,7 @@ class HomeSurveyItem extends StatelessWidget {
     return Stack(
       children: [
         Image.network(
-          survey.coverImageUrl,
+          survey.largeCoverImageUrl,
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
