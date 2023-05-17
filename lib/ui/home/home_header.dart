@@ -30,6 +30,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      key: HomeWidgetId.dateText,
                       widget.date.toUpperCase(),
                       style: const TextStyle(
                         color: Colors.white,
@@ -39,6 +40,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                     ),
                     const SizedBox(height: space4),
                     Text(
+                      key: HomeWidgetId.todayText,
                       context.localization.home_today,
                       style: const TextStyle(
                         color: Colors.white,

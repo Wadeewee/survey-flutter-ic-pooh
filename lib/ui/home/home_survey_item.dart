@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/home/home_widget_id.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
 
 class HomeSurveyItem extends StatelessWidget {
@@ -22,6 +23,7 @@ class HomeSurveyItem extends StatelessWidget {
     return Stack(
       children: [
         Image.network(
+          key: HomeWidgetId.coverImageUrl,
           survey.largeCoverImageUrl,
           fit: BoxFit.cover,
           width: double.infinity,
@@ -53,6 +55,7 @@ class HomeSurveyItem extends StatelessWidget {
 
   Widget _buildTitle() {
     return Text(
+      key: HomeWidgetId.titleText,
       survey.title,
       style: const TextStyle(
         color: Colors.white,
@@ -64,6 +67,7 @@ class HomeSurveyItem extends StatelessWidget {
 
   Widget _buildDescription() {
     return Text(
+      key: HomeWidgetId.descriptionText,
       survey.description,
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -77,6 +81,7 @@ class HomeSurveyItem extends StatelessWidget {
 
   Widget _buildNextButton() {
     return CircleNextButton(
+      key: HomeWidgetId.nextButton,
       onPressed: () => onNextButtonPressed.call(),
     );
   }

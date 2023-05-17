@@ -4,11 +4,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:survey_flutter_ic/api/service/auth_service.dart';
+import 'package:survey_flutter_ic/api/service/survey_service.dart';
+import 'package:survey_flutter_ic/api/service/user_service.dart';
 import 'package:survey_flutter_ic/di/provider/di.dart';
 import 'package:survey_flutter_ic/main.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 
 import '../fake_data/fake_services/fake_auth_service.dart';
+import '../fake_data/fake_services/fake_survey_service.dart';
+import '../fake_data/fake_services/fake_user_service.dart';
 
 class TestUtil {
   /// This is useful when we test the whole app with the real configs(styling,
@@ -52,16 +56,21 @@ class TestUtil {
         buildNumber: '',
         buildSignature: '',
         installerStore: '');
-    FlutterConfig.loadValueForTesting({'CLIENT_SECRET': 'CLIENT_SECRET'});
-    FlutterConfig.loadValueForTesting({'CLIENT_ID': 'CLIENT_ID'});
-    FlutterConfig.loadValueForTesting(
-        {'REST_API_ENDPOINT': 'REST_API_ENDPOINT'});
+
+    FlutterConfig.loadValueForTesting({
+      'CLIENT_ID': 'CLIENT_ID',
+      'CLIENT_SECRET': 'CLIENT_SECRET',
+      'REST_API_ENDPOINT': 'REST_API_ENDPOINT',
+    });
   }
 
   static Future setupTestEnvironment() async {
     _initDependencies();
+    configureInjection();
+
     getIt.allowReassignment = true;
     getIt.registerSingleton<AuthService>(FakeAuthService());
-    configureInjection();
+    getIt.registerSingleton<UserService>(FakeUserService());
+    getIt.registerSingleton<SurveyService>(FakeSurveyService());
   }
 }

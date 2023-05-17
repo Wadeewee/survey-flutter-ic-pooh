@@ -21,7 +21,7 @@ abstract class AuthRepository {
   });
 }
 
-@Singleton(as: AuthRepository)
+@LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl extends AuthRepository {
   final AuthService _authService;
 
