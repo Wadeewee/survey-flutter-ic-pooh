@@ -83,28 +83,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               avatar: profileAvatar,
             ),
           ),
-          if (surveys.isNotEmpty)
-            Positioned(
-              bottom: 206,
-              child: PageViewDotIndicator(
-                currentItem: _currentIndex,
-                count: surveys.length,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: space15),
-                margin: const EdgeInsets.symmetric(horizontal: space5),
-                size: const Size(
-                  pagerIndicatorSize,
-                  pagerIndicatorSize,
-                ),
-                unselectedSize: const Size(
-                  pagerIndicatorSize,
-                  pagerIndicatorSize,
-                ),
-                unselectedColor: Colors.white.withOpacity(0.2),
-                selectedColor: Colors.white,
-              ),
-            )
+          if (surveys.isNotEmpty) _buildPagerIndicator(surveys)
         ],
+      ),
+    );
+  }
+
+  Widget _buildPagerIndicator(List<SurveyModel> surveys) {
+    return Positioned(
+      bottom: 206,
+      child: PageViewDotIndicator(
+        currentItem: _currentIndex,
+        count: surveys.length,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: space15),
+        margin: const EdgeInsets.symmetric(horizontal: space5),
+        size: const Size(
+          pagerIndicatorSize,
+          pagerIndicatorSize,
+        ),
+        unselectedSize: const Size(
+          pagerIndicatorSize,
+          pagerIndicatorSize,
+        ),
+        unselectedColor: Colors.white.withOpacity(0.2),
+        selectedColor: Colors.white,
       ),
     );
   }

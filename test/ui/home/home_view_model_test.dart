@@ -80,11 +80,11 @@ void main() {
       container.read(homeViewModelProvider.notifier).loadData();
     });
 
-    test('When calling getProfile failed, it emits an empty string', () {
+    test('When calling getProfile failed, it emits nothing', () {
       when(mockGetProfileUseCase.call()).thenAnswer((_) async => Failed(
           UseCaseException(const NetworkExceptions.defaultError("Error"))));
 
-      expect(viewModel.profileAvatar, emitsThrough(''));
+      expect(viewModel.profileAvatar, neverEmits(profile));
 
       container.read(homeViewModelProvider.notifier).loadData();
     });

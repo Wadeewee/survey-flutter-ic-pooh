@@ -57,13 +57,15 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
   Stream<List<SurveyModel>> get surveys => _surveys.stream;
 
   void loadData() async {
-    final profileStream = Stream.fromFuture(_getProfileUseCase.call());
-    final surveysStream = Stream.fromFuture(_getSurveysUseCase.call(
-      GetSurveysInput(
-        pageNumber: _defaultFirstPageIndex,
-        pageSize: _defaultPageSize,
-      ),
-    ));
+    final profileStream = _getProfileUseCase.call().asStream();
+    final surveysStream = _getSurveysUseCase
+        .call(
+          GetSurveysInput(
+            pageNumber: _defaultFirstPageIndex,
+            pageSize: _defaultPageSize,
+          ),
+        )
+        .asStream();
 
     ZipStream.zip2(
       profileStream,
@@ -73,8 +75,6 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
 
         if (profileResult is Success<ProfileModel>) {
           _profileAvatar.add(profileResult.value.avatarUrl);
-        } else {
-          _profileAvatar.add('');
         }
 
         if (surveysResult is Success<List<SurveyModel>>) {
