@@ -24,10 +24,9 @@ void homeScreenTest() {
 
     setUpAll(() async {
       await TestUtil.setupTestEnvironment();
-      await FakeData.initDefault();
     });
 
-    setUp(() {
+    setUp(() async {
       profileAvatar = find.byKey(HomeWidgetId.profileAvatarImage);
       dateText = find.byKey(HomeWidgetId.dateText);
       todayText = find.byKey(HomeWidgetId.todayText);
@@ -36,6 +35,8 @@ void homeScreenTest() {
       titleText = find.byKey(HomeWidgetId.titleText);
       descriptionText = find.byKey(HomeWidgetId.descriptionText);
       nextButton = find.byKey(HomeWidgetId.nextButton);
+
+      await FakeData.initDefault();
     });
 
     testWidgets(
