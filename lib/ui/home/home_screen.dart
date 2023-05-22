@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 survey: surveys[index],
                 onNextButtonPressed: () {
                   context.goNamed(
-                    RoutePath.detail.name,
+                    RoutePath.surveyDetail.name,
                     extra: surveys[_currentIndex],
                   );
                 },

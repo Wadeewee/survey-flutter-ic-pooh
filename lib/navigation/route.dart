@@ -1,16 +1,16 @@
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
-import 'package:survey_flutter_ic/ui/detail/detail_screen.dart';
 import 'package:survey_flutter_ic/ui/home/home_screen.dart';
 import 'package:survey_flutter_ic/ui/signin/sign_in_screen.dart';
 import 'package:survey_flutter_ic/ui/splash/splash_screen.dart';
+import 'package:survey_flutter_ic/ui/survey_detail/survey_detail_screen.dart';
 
 enum RoutePath {
   root('/', '/'),
   home('/home', 'home'),
   signIn('/sign_in', 'sign_in'),
-  detail('detail', 'detail');
+  surveyDetail('survey_detail', 'survey_detail');
 
   const RoutePath(this.path, this.name);
 
@@ -39,9 +39,9 @@ class AppRouter {
             builder: (_, __) => const HomeScreen(),
             routes: [
               GoRoute(
-                name: RoutePath.detail.name,
-                path: RoutePath.detail.path,
-                builder: (_, state) => DetailScreen(
+                name: RoutePath.surveyDetail.name,
+                path: RoutePath.surveyDetail.path,
+                builder: (_, state) => SurveyDetailScreen(
                   survey: (state.extra as SurveyModel),
                 ),
               ),

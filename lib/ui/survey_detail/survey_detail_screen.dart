@@ -8,19 +8,19 @@ import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/widget/flat_button_text.dart';
 
-class DetailScreen extends ConsumerStatefulWidget {
+class SurveyDetailScreen extends ConsumerStatefulWidget {
   final SurveyModel survey;
 
-  const DetailScreen({
+  const SurveyDetailScreen({
     super.key,
     required this.survey,
   });
 
   @override
-  ConsumerState<DetailScreen> createState() => _DetailScreen();
+  ConsumerState<SurveyDetailScreen> createState() => _SurveyDetailScreen();
 }
 
-class _DetailScreen extends ConsumerState<DetailScreen> {
+class _SurveyDetailScreen extends ConsumerState<SurveyDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +80,6 @@ class _DetailScreen extends ConsumerState<DetailScreen> {
     return Text(
       // TODO: Binds data from ViewModel
       widget.survey.description,
-      maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
@@ -94,11 +93,11 @@ class _DetailScreen extends ConsumerState<DetailScreen> {
     return Align(
       alignment: Alignment.bottomRight,
       child: FlatButtonText(
-        text: context.localization.detail_start_survey_button,
+        text: context.localization.survey_detail_start_survey_button,
         isEnabled: true,
-        onPressed: () => {
+        onPressed: () {
           // TODO: Navigate to question screen
-          showToastMessage("Start Survey"),
+          showToastMessage("Start Survey");
         },
       ),
     );
