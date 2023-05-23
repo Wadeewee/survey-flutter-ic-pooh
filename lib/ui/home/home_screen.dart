@@ -5,9 +5,11 @@ import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/home/home_header.dart';
+import 'package:survey_flutter_ic/ui/home/home_shimmer_loading.dart';
 import 'package:survey_flutter_ic/ui/home/home_survey_item.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_model.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_state.dart';
+import 'package:survey_flutter_ic/ui/home/home_widget_id.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,7 +43,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
 
     if (isLoading) {
-      return _buildLoadingIndicator();
+      return const HomeShimmerLoading();
     } else {
       return _buildHomeScreenContent(
         today,
@@ -91,6 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildPagerIndicator(List<SurveyModel> surveys) {
     return Positioned(
+      key: HomeWidgetId.pagerIndicator,
       bottom: 206,
       child: PageViewDotIndicator(
         currentItem: _currentIndex,
@@ -109,17 +112,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         unselectedColor: Colors.white.withOpacity(0.2),
         selectedColor: Colors.white,
       ),
-    );
-  }
-
-  // TODO: Create a home shimmer loading
-  Widget _buildLoadingIndicator() {
-    return Center(
-      child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
-          child: const CircularProgressIndicator(
-            color: Colors.white,
-          )),
     );
   }
 }

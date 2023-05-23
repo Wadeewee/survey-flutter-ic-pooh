@@ -8,7 +8,7 @@ abstract class UserRepository {
   Future<ProfileModel> getProfile();
 }
 
-@Singleton(as: UserRepository)
+@LazySingleton(as: UserRepository)
 class UserRepositoryImpl extends UserRepository {
   final UserService _userService;
 

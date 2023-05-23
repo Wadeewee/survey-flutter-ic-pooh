@@ -10,7 +10,7 @@ abstract class SurveyRepository {
   });
 }
 
-@Singleton(as: SurveyRepository)
+@LazySingleton(as: SurveyRepository)
 class SurveyRepositoryImpl extends SurveyRepository {
   final SurveyService _surveyService;
 
