@@ -34,6 +34,7 @@ void main() {
 
       expect(result, isA<Success>());
       expect((result as Success).value, expected);
+      verify(mockRepository.saveSurveys(expected));
     });
 
     test('When calling GetSurveys failed, it returns the result Failed',
@@ -54,6 +55,7 @@ void main() {
 
       expect(result, isA<Failed>());
       expect((result as Failed).exception.actualException, expected);
+      verifyNever(mockRepository.saveSurveys(any));
     });
   });
 }

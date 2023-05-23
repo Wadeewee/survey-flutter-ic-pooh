@@ -25,13 +25,16 @@ class GetSurveysUseCase extends UseCase<List<SurveyModel>, GetSurveysInput> {
   @override
   Future<Result<List<SurveyModel>>> call(GetSurveysInput params) {
     return _repository
-        .getSurveys(
-          number: params.pageNumber,
-          size: params.pageSize,
-        )
-        // ignore: unnecessary_cast
-        .then((value) => Success(value) as Result<List<SurveyModel>>)
-        .onError<NetworkExceptions>(
+        .getSurveys(number: params.pageNumber, size: params.pageSize)
+        .then((value) {
+      _saveSurveys(value);
+      // ignore: unnecessary_cast
+      return Success(value) as Result<List<SurveyModel>>;
+    }).onError<NetworkExceptions>(
             (exception, stackTrace) => Failed(UseCaseException(exception)));
+  }
+
+  void _saveSurveys(List<SurveyModel> surveys) async {
+    await _repository.saveSurveys(surveys);
   }
 }
