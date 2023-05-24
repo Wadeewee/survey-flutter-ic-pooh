@@ -22,7 +22,7 @@ enum RoutePath {
 class AppRouter {
   GoRouter router([
     String? initialLocation,
-    dynamic extraBundle,
+    Object? extraBundle,
   ]) =>
       GoRouter(
         initialLocation: initialLocation ?? RoutePath.root.path,

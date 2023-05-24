@@ -33,7 +33,7 @@ class TestUtil {
     );
   }
 
-  static Widget pumpWidgetWithRoutePath(String route, {dynamic extraBundle}) {
+  static Widget pumpWidgetWithRoutePath(String route, {Object? extraBundle}) {
     _initDependencies();
 
     final router = getIt.get<AppRouter>().router(route, extraBundle);
