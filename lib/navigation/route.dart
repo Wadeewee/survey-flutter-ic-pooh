@@ -20,8 +20,13 @@ enum RoutePath {
 
 @Singleton()
 class AppRouter {
-  GoRouter router([String? initialLocation]) => GoRouter(
+  GoRouter router([
+    String? initialLocation,
+    Object? extraBundle,
+  ]) =>
+      GoRouter(
         initialLocation: initialLocation ?? RoutePath.root.path,
+        initialExtra: extraBundle,
         routes: <GoRoute>[
           GoRoute(
             name: RoutePath.root.name,
