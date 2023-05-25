@@ -41,6 +41,26 @@ void homeScreenTest() {
     });
 
     testWidgets(
+        "When loading data and getSurveys failed, it displays Home screen correctly",
+        (WidgetTester tester) async {
+      FakeData.updateResponse(keySurveys, const FakeResponseModel(400, {}));
+      await tester.pumpWidget(
+        TestUtil.pumpWidgetWithRoutePath(RoutePath.home.path),
+      );
+      await tester.pumpAndSettle();
+
+      expect(profileAvatar, findsOneWidget);
+      expect(dateText, findsOneWidget);
+      expect(todayText, findsOneWidget);
+
+      expect(pagerIndicator, findsNothing);
+      expect(coverImageUrl, findsNothing);
+      expect(titleText, findsNothing);
+      expect(descriptionText, findsNothing);
+      expect(nextButton, findsNothing);
+    });
+
+    testWidgets(
         "When loading data successfully, it displays Home screen correctly",
         (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -77,26 +97,6 @@ void homeScreenTest() {
       expect(titleText, findsOneWidget);
       expect(descriptionText, findsOneWidget);
       expect(nextButton, findsOneWidget);
-    });
-
-    testWidgets(
-        "When loading data and getSurveys failed, it displays Home screen correctly",
-        (WidgetTester tester) async {
-      FakeData.updateResponse(keySurveys, const FakeResponseModel(400, {}));
-      await tester.pumpWidget(
-        TestUtil.pumpWidgetWithRoutePath(RoutePath.home.path),
-      );
-      await tester.pumpAndSettle();
-
-      expect(profileAvatar, findsOneWidget);
-      expect(dateText, findsOneWidget);
-      expect(todayText, findsOneWidget);
-
-      expect(pagerIndicator, findsNothing);
-      expect(coverImageUrl, findsNothing);
-      expect(titleText, findsNothing);
-      expect(descriptionText, findsNothing);
-      expect(nextButton, findsNothing);
     });
 
     testWidgets(
