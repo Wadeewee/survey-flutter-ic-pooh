@@ -3,12 +3,17 @@ import 'package:survey_flutter_ic/api/exception/network_exceptions.dart';
 import 'package:survey_flutter_ic/api/service/survey_service.dart';
 import 'package:survey_flutter_ic/database/dto/survey_dto.dart';
 import 'package:survey_flutter_ic/database/persistence/survey_persistence.dart';
+import 'package:survey_flutter_ic/model/survey_detail_model.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 
 abstract class SurveyRepository {
   Future<List<SurveyModel>> getSurveys({
     required int number,
     required int size,
+  });
+
+  Future<SurveyDetailModel> getSurveyDetail({
+    required String surveyId,
   });
 
   Future<List<SurveyModel>> getCachedSurveys();
@@ -35,6 +40,18 @@ class SurveyRepositoryImpl extends SurveyRepository {
           .toList();
 
       return surveysModel;
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<SurveyDetailModel> getSurveyDetail({
+    required String surveyId,
+  }) async {
+    try {
+      final response = await _surveyService.getSurveyDetail(surveyId);
+      return SurveyDetailModel.fromResponse(response);
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
