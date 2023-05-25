@@ -76,18 +76,18 @@ void main() {
     test(
         'When calling GetCachedSurveys, it emits the corresponding SurveyModel',
         () async {
-      when(mockSurveyPersistence.surveys()).thenAnswer((_) async => surveysDto);
+      when(mockSurveyPersistence.getSurveys())
+          .thenAnswer((_) async => surveysDto);
 
       final result = await repository.getCachedSurveys();
 
       expect(result.first, SurveyModel.fromDto(surveysDto.first));
-      verify(mockSurveyPersistence.surveys());
     });
 
     test(
         'When calling SaveSurveys with the currentSurveys is empty, it should save SurveysDto',
         () async {
-      when(mockSurveyPersistence.surveys()).thenAnswer((_) async => []);
+      when(mockSurveyPersistence.getSurveys()).thenAnswer((_) async => []);
 
       await repository.saveSurveys(surveys);
 
@@ -98,7 +98,8 @@ void main() {
     test(
         'When calling SaveSurveys with the currentSurveys is not empty, it should first clear the cache and then save SurveysDto',
         () async {
-      when(mockSurveyPersistence.surveys()).thenAnswer((_) async => surveysDto);
+      when(mockSurveyPersistence.getSurveys())
+          .thenAnswer((_) async => surveysDto);
 
       await repository.saveSurveys(surveys);
 

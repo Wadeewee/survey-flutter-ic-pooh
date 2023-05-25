@@ -3,18 +3,18 @@ import 'package:mockito/mockito.dart';
 import 'package:survey_flutter_ic/api/exception/network_exceptions.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/usecase/base/base_use_case.dart';
-import 'package:survey_flutter_ic/usecase/get_survey_use_case.dart';
+import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 
 import '../mocks/generate_mocks.mocks.dart';
 
 void main() {
   group('GetSurveysUseCase', () {
     late MockSurveyRepository mockRepository;
-    late GetSurveysUseCase useCase;
+    late GetAndCacheSurveysUseCase useCase;
 
     setUp(() {
       mockRepository = MockSurveyRepository();
-      useCase = GetSurveysUseCase(mockRepository);
+      useCase = GetAndCacheSurveysUseCase(mockRepository);
     });
 
     test('When calling GetSurveys successfully, it returns the result Success',

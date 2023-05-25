@@ -6,8 +6,8 @@ import 'package:survey_flutter_ic/model/profile_model.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_state.dart';
 import 'package:survey_flutter_ic/usecase/base/base_use_case.dart';
+import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
-import 'package:survey_flutter_ic/usecase/get_survey_use_case.dart';
 
 const _defaultFirstPageIndex = 1;
 const _defaultPageSize = 10;
@@ -16,7 +16,7 @@ final homeViewModelProvider =
     StateNotifierProvider.autoDispose<HomeViewModel, HomeViewState>(
         (_) => HomeViewModel(
               getIt.get<GetProfileUseCase>(),
-              getIt.get<GetSurveysUseCase>(),
+              getIt.get<GetAndCacheSurveysUseCase>(),
             ));
 
 final isLoadingProvider = StreamProvider.autoDispose(
@@ -33,11 +33,11 @@ final surveysProvider = StreamProvider.autoDispose(
 
 class HomeViewModel extends StateNotifier<HomeViewState> {
   final GetProfileUseCase _getProfileUseCase;
-  final GetSurveysUseCase _getSurveysUseCase;
+  final GetAndCacheSurveysUseCase _getAndCacheSurveysUseCase;
 
   HomeViewModel(
     this._getProfileUseCase,
-    this._getSurveysUseCase,
+    this._getAndCacheSurveysUseCase,
   ) : super(const HomeViewState.init());
 
   final BehaviorSubject<bool> _isLoading = BehaviorSubject();
@@ -58,7 +58,7 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
 
   void loadData() async {
     final profileStream = _getProfileUseCase.call().asStream();
-    final surveysStream = _getSurveysUseCase
+    final surveysStream = _getAndCacheSurveysUseCase
         .call(
           GetSurveysInput(
             pageNumber: _defaultFirstPageIndex,

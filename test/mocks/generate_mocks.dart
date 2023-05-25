@@ -10,8 +10,8 @@ import 'package:survey_flutter_ic/api/service/auth_service.dart';
 import 'package:survey_flutter_ic/api/service/survey_service.dart';
 import 'package:survey_flutter_ic/api/service/user_service.dart';
 import 'package:survey_flutter_ic/database/persistence/survey_persistence.dart';
+import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
-import 'package:survey_flutter_ic/usecase/get_survey_use_case.dart';
 import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
 
 @GenerateMocks([
@@ -22,7 +22,7 @@ import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
   SignInUseCase,
   SurveyService,
   SurveyRepository,
-  GetSurveysUseCase,
+  GetAndCacheSurveysUseCase,
   UserService,
   UserRepository,
   GetProfileUseCase,

@@ -17,10 +17,11 @@ class GetSurveysInput {
 }
 
 @Injectable()
-class GetSurveysUseCase extends UseCase<List<SurveyModel>, GetSurveysInput> {
+class GetAndCacheSurveysUseCase
+    extends UseCase<List<SurveyModel>, GetSurveysInput> {
   final SurveyRepository _repository;
 
-  const GetSurveysUseCase(this._repository);
+  const GetAndCacheSurveysUseCase(this._repository);
 
   @override
   Future<Result<List<SurveyModel>>> call(GetSurveysInput params) {

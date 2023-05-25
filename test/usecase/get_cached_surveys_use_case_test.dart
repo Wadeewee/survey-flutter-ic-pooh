@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:survey_flutter_ic/api/exception/network_exceptions.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/usecase/base/base_use_case.dart';
-import 'package:survey_flutter_ic/usecase/get_cached_survey_use_case.dart';
+import 'package:survey_flutter_ic/usecase/get_cached_surveys_use_case.dart';
 
 import '../mocks/generate_mocks.mocks.dart';
 

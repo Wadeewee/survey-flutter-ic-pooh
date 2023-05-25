@@ -29,14 +29,13 @@ void main() {
     });
 
     test(
-        'When calling Surveys form cache, it emits the corresponding SurveyDto',
+        'When calling Surveys from cache, it emits the corresponding SurveyDto',
         () async {
       when(mockBox.get('surveyKey', defaultValue: [])).thenReturn(surveysDto);
 
-      final result = await surveyPersistence.surveys();
+      final result = await surveyPersistence.getSurveys();
 
       expect(result, surveysDto);
-      verify(mockBox.get('surveyKey', defaultValue: []));
     });
 
     test('When adding the Surveys to the cache, it should call the put method',
@@ -47,7 +46,7 @@ void main() {
     });
 
     test(
-        'When clearing the Surveys form cache, it should call the delete method',
+        'When clearing the Surveys from cache, it should call the delete method',
         () async {
       await surveyPersistence.clear();
 

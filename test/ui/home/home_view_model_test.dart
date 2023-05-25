@@ -14,7 +14,7 @@ import '../../mocks/generate_mocks.mocks.dart';
 void main() {
   group('HomeViewModel', () {
     late MockGetProfileUseCase mockGetProfileUseCase;
-    late MockGetSurveysUseCase mockGetSurveysUseCase;
+    late MockGetAndCacheSurveysUseCase mockGetAndCacheSurveysUseCase;
     late HomeViewModel viewModel;
     late ProviderContainer container;
 
@@ -35,12 +35,12 @@ void main() {
 
     setUp(() {
       mockGetProfileUseCase = MockGetProfileUseCase();
-      mockGetSurveysUseCase = MockGetSurveysUseCase();
+      mockGetAndCacheSurveysUseCase = MockGetAndCacheSurveysUseCase();
 
       container = ProviderContainer(overrides: [
         homeViewModelProvider.overrideWith((ref) => HomeViewModel(
               mockGetProfileUseCase,
-              mockGetSurveysUseCase,
+              mockGetAndCacheSurveysUseCase,
             ))
       ]);
       viewModel = container.read(homeViewModelProvider.notifier);
@@ -48,7 +48,7 @@ void main() {
 
       when(mockGetProfileUseCase.call())
           .thenAnswer((_) async => Success(profile));
-      when(mockGetSurveysUseCase.call(any))
+      when(mockGetAndCacheSurveysUseCase.call(any))
           .thenAnswer((_) async => Success(surveys));
     });
 
@@ -96,8 +96,9 @@ void main() {
     });
 
     test('When calling getSurveys failed, it returns the error state', () {
-      when(mockGetSurveysUseCase.call(any)).thenAnswer((_) async => Failed(
-          UseCaseException(const NetworkExceptions.defaultError("Error"))));
+      when(mockGetAndCacheSurveysUseCase.call(any)).thenAnswer((_) async =>
+          Failed(
+              UseCaseException(const NetworkExceptions.defaultError("Error"))));
 
       expect(
           viewModel.stream,

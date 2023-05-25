@@ -42,24 +42,24 @@ class SurveyRepositoryImpl extends SurveyRepository {
 
   @override
   Future<List<SurveyModel>> getCachedSurveys() async {
-    final surveysDto = await _surveyPersistence.surveys();
+    final surveysDto = await _surveyPersistence.getSurveys();
     return surveysDto.map((e) => SurveyModel.fromDto(e)).toList();
   }
 
   @override
   Future<void> saveSurveys(List<SurveyModel> surveys) async {
-    final currentSurveys = await _surveyPersistence.surveys();
+    final currentSurveys = await _surveyPersistence.getSurveys();
     final surveysDto = surveys.map((e) => SurveyDto.fromModel(e)).toList();
 
     if (currentSurveys.isNotEmpty) {
-      await clearCached();
+      await clearCachedSurveys();
       _surveyPersistence.add(surveysDto);
     } else {
       _surveyPersistence.add(surveysDto);
     }
   }
 
-  Future<void> clearCached() async {
+  Future<void> clearCachedSurveys() async {
     _surveyPersistence.clear();
   }
 }

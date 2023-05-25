@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:survey_flutter_ic/database/dto/survey_dto.dart';
 
 abstract class SurveyPersistence {
-  Future<List<SurveyDto>> surveys();
+  Future<List<SurveyDto>> getSurveys();
 
   Future<void> add(List<SurveyDto> surveys);
 
@@ -18,7 +18,7 @@ class SurveyPersistenceImpl extends SurveyPersistence {
   SurveyPersistenceImpl(this._surveyBox);
 
   @override
-  Future<List<SurveyDto>> surveys() {
+  Future<List<SurveyDto>> getSurveys() {
     return Future.value(
       List<SurveyDto>.from(
         _surveyBox.get(
