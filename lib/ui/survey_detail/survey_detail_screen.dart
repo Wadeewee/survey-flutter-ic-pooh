@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
+import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_detail/survey_detail_view_model.dart';
 import 'package:survey_flutter_ic/ui/survey_detail/survey_detail_widget_id.dart';
@@ -50,7 +50,7 @@ class _SurveyDetailState extends ConsumerState<SurveyDetailScreen> {
                   const SizedBox(height: space16),
                   _buildDescription(survey?.description ?? ''),
                   const Expanded(child: SizedBox.shrink()),
-                  _buildStartSurveyButton(),
+                  _buildStartSurveyButton(survey?.id ?? ''),
                 ],
               ),
             ),
@@ -96,7 +96,6 @@ class _SurveyDetailState extends ConsumerState<SurveyDetailScreen> {
     return Text(
       key: SurveyDetailWidgetId.descriptionText,
       description,
-      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
         fontSize: fontSize17,
@@ -105,17 +104,17 @@ class _SurveyDetailState extends ConsumerState<SurveyDetailScreen> {
     );
   }
 
-  Widget _buildStartSurveyButton() {
+  Widget _buildStartSurveyButton(String id) {
     return Align(
       key: SurveyDetailWidgetId.startSurveyButton,
       alignment: Alignment.bottomRight,
       child: FlatButtonText(
         text: context.localization.survey_detail_start_survey_button,
         isEnabled: true,
-        onPressed: () {
-          // TODO: Navigate to question screen
-          showToastMessage("Start Survey");
-        },
+        onPressed: () => context.goNamed(
+          RoutePath.surveyQuestions.name,
+          params: {surveyIdKey: id},
+        ),
       ),
     );
   }

@@ -5,12 +5,16 @@ import 'package:survey_flutter_ic/ui/home/home_screen.dart';
 import 'package:survey_flutter_ic/ui/signin/sign_in_screen.dart';
 import 'package:survey_flutter_ic/ui/splash/splash_screen.dart';
 import 'package:survey_flutter_ic/ui/survey_detail/survey_detail_screen.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_screen.dart';
+
+const surveyIdKey = 'surveyId';
 
 enum RoutePath {
   root('/', '/'),
   home('/home', 'home'),
   signIn('/sign_in', 'sign_in'),
-  surveyDetail('survey_detail', 'survey_detail');
+  surveyDetail('survey_detail', 'survey_detail'),
+  surveyQuestions('survey_questions/:$surveyIdKey', 'survey_questions');
 
   const RoutePath(this.path, this.name);
 
@@ -48,6 +52,13 @@ class AppRouter {
                 path: RoutePath.surveyDetail.path,
                 builder: (_, state) => SurveyDetailScreen(
                   survey: (state.extra as SurveyModel),
+                ),
+              ),
+              GoRoute(
+                name: RoutePath.surveyQuestions.name,
+                path: RoutePath.surveyQuestions.path,
+                builder: (_, state) => SurveyQuestionsScreen(
+                  surveyId: (state.params[surveyIdKey] as String),
                 ),
               ),
             ],
