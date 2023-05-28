@@ -13,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
   await initHivePersistence();
-  configureInjection();
+  await configureInjection();
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -12,6 +12,7 @@ import 'package:survey_flutter_ic/database/persistence/survey_persistence.dart';
 import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
+import 'package:survey_flutter_ic/usecase/is_authorized_use_case.dart';
 import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
 
 @GenerateMocks([
@@ -29,6 +30,7 @@ import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
   DioError,
   SurveyPersistence,
   Box,
+  IsAuthorizedUseCase,
 ])
 main() {
   // empty class to generate mock repository classes
