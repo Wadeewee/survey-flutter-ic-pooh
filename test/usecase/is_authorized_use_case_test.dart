@@ -27,9 +27,20 @@ void main() {
     });
 
     test(
-        'When calling IsAuthorizedUseCase with result is false, it returns the result Success with false',
+        'When calling IsAuthorizedUseCase with result is null, it returns the result Success with false',
         () async {
       when(mockPersistence.accessToken).thenAnswer((_) async => null);
+
+      final result = await useCase.call();
+
+      expect(result, isA<Success>());
+      expect((result as Success).value, false);
+    });
+
+    test(
+        'When calling IsAuthorizedUseCase with result is empty, it returns the result Success with false',
+        () async {
+      when(mockPersistence.accessToken).thenAnswer((_) async => '');
 
       final result = await useCase.call();
 

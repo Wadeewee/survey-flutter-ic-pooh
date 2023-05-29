@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/ui/splash/splash_view_model.dart';
+import 'package:survey_flutter_ic/ui/splash/splash_widget_id.dart';
 
 const _logoVisibilityDelayInMilliseconds = 500;
 const _logoVisibilityAnimationInMilliseconds = 1000;
@@ -41,11 +42,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     return Scaffold(
       body: Container(
+        key: SplashWidgetId.background,
         decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage(Assets.images.bgSplash.path), fit: BoxFit.fill),
         ),
         child: Center(
+          key: SplashWidgetId.logo,
           child: AnimatedOpacity(
             duration: const Duration(
                 milliseconds: _logoVisibilityAnimationInMilliseconds),
