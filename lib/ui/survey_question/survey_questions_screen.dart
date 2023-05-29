@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
+import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
 
 class SurveyQuestionsScreen extends ConsumerStatefulWidget {
@@ -19,17 +22,45 @@ class SurveyQuestionsScreen extends ConsumerStatefulWidget {
 }
 
 class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
+  int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
+    ref.read(surveyQuestionsViewModelProvider.notifier).getSurveyDetail(
+          widget.surveyId,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(isLoadingProvider).value ?? false;
+    final surveyQuestion = ref.watch(surveyQuestionProvider).value;
+
+    ref.listen<SurveyQuestionsViewState>(surveyQuestionsViewModelProvider,
+        (_, state) {
+      state.maybeWhen(
+        error: (message) => showToastMessage(message),
+        orElse: () {},
+      );
+    });
+
+    if (isLoading) {
+      return _buildLoadingIndicator();
+    } else {
+      return _buildSurveyQuestionsScreenContent(surveyQuestion);
+    }
+  }
+
+  Widget _buildSurveyQuestionsScreenContent(
+    SurveyQuestionModel? surveyQuestion,
+  ) {
+    final totalQuestions = surveyQuestion?.totalQuestions ?? 0;
     return Scaffold(
       body: Stack(
         children: [
-          _buildCoverImageUrl(),
+          if (surveyQuestion != null)
+            _buildCoverImageUrl(surveyQuestion.largeCoverImageUrl),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(space20),
@@ -38,11 +69,13 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
                 children: [
                   _buildCloseButton(),
                   const SizedBox(height: space30),
-                  _buildQuestionsIndicator(),
+                  if (totalQuestions > 0)
+                    _buildQuestionsIndicator(totalQuestions),
                   const SizedBox(height: space10),
-                  _buildQuestionLabel(),
+                  _buildQuestionLabel(surveyQuestion?.text ?? ''),
                   const Expanded(child: SizedBox.shrink()),
-                  _buildNextButton(),
+                  // TODO: Update the logic to show the next button
+                  if (totalQuestions > 0) _buildNextButton(),
                 ],
               ),
             ),
@@ -64,20 +97,18 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildCoverImageUrl() {
+  Widget _buildCoverImageUrl(String largeCoverImageUrl) {
     return Image.network(
-      // TODO: Bind data from VM.
-      "https://i.postimg.cc/NjT59j53/Background-3x.jpg",
+      largeCoverImageUrl,
       fit: BoxFit.cover,
       width: double.infinity,
       height: double.infinity,
     );
   }
 
-  Widget _buildQuestionsIndicator() {
+  Widget _buildQuestionsIndicator(int totalQuestions) {
     return Text(
-      // TODO: Bind data from VM.
-      "1/5",
+      "${_currentIndex + 1}/$totalQuestions",
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
         fontSize: fontSize17,
@@ -86,11 +117,10 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildQuestionLabel() {
-    return const Text(
-      // TODO: Bind data from VM.
-      "How fulfilled did you fell during this WFH period?",
-      style: TextStyle(
+  Widget _buildQuestionLabel(String question) {
+    return Text(
+      question,
+      style: const TextStyle(
         color: Colors.white,
         fontSize: fontSize34,
         fontWeight: FontWeight.w800,
@@ -103,10 +133,22 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
       alignment: Alignment.bottomRight,
       child: CircleNextButton(
         onPressed: () {
-          // TODO: Show the next question
-          showToastMessage("Next question");
+          ref
+              .read(surveyQuestionsViewModelProvider.notifier)
+              .getNextSurveyQuestion(_currentIndex + 1);
+          _currentIndex++;
         },
       ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
+          child: const CircularProgressIndicator(
+            color: Colors.white,
+          )),
     );
   }
 }

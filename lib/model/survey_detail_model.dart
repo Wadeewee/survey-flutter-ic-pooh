@@ -18,7 +18,10 @@ class SurveyDetailModel extends Equatable {
     return SurveyDetailModel(
         id: response.id,
         questions: (response.questions ?? [])
-            .map((e) => SurveyQuestionModel.fromResponse(e))
+            .map((e) => SurveyQuestionModel.fromResponse(
+                  e,
+                  response.questions?.length ?? 0,
+                ))
             .toList());
   }
 }

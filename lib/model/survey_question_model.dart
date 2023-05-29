@@ -25,6 +25,7 @@ class SurveyQuestionModel extends Equatable {
   final String largeCoverImageUrl;
   final double coverImageOpacity;
   final List<SurveyAnswerModel> answers;
+  final int totalQuestions;
 
   const SurveyQuestionModel({
     required this.id,
@@ -35,6 +36,7 @@ class SurveyQuestionModel extends Equatable {
     required this.coverImageUrl,
     required this.largeCoverImageUrl,
     required this.answers,
+    required this.totalQuestions,
   });
 
   @override
@@ -49,7 +51,10 @@ class SurveyQuestionModel extends Equatable {
         answers,
       ];
 
-  factory SurveyQuestionModel.fromResponse(SurveyQuestionResponse response) {
+  factory SurveyQuestionModel.fromResponse(
+    SurveyQuestionResponse response,
+    int totalQuestions,
+  ) {
     return SurveyQuestionModel(
       id: response.id,
       text: response.text ?? '',
@@ -64,6 +69,7 @@ class SurveyQuestionModel extends Equatable {
       answers: (response.answers ?? [])
           .map((e) => SurveyAnswerModel.fromResponse(e))
           .toList(),
+      totalQuestions: totalQuestions,
     );
   }
 }
