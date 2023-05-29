@@ -61,7 +61,7 @@ class SurveyQuestionModel extends Equatable {
       coverImageOpacity: response.coverImageOpacity ?? 0.0,
       coverImageUrl: response.coverImageUrl ?? '',
       largeCoverImageUrl: '${response.coverImageUrl ?? ''}l',
-      answers: response.answers
+      answers: (response.answers ?? [])
           .map((e) => SurveyAnswerModel.fromResponse(e))
           .toList(),
     );

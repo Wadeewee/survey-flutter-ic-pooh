@@ -12,12 +12,12 @@ class SurveyDetailModel extends Equatable {
   });
 
   @override
-  List<Object?> get props => [questions];
+  List<Object?> get props => [id, questions];
 
   factory SurveyDetailModel.fromResponse(SurveyDetailResponse response) {
     return SurveyDetailModel(
         id: response.id,
-        questions: response.questions
+        questions: (response.questions ?? [])
             .map((e) => SurveyQuestionModel.fromResponse(e))
             .toList());
   }

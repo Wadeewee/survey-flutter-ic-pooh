@@ -7,7 +7,7 @@ part 'survey_detail_response.g.dart';
 @JsonSerializable()
 class SurveyDetailResponse {
   final String id;
-  final List<SurveyQuestionResponse> questions;
+  final List<SurveyQuestionResponse>? questions;
 
   SurveyDetailResponse({
     required this.id,

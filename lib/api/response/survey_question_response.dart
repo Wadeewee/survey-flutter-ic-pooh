@@ -13,7 +13,7 @@ class SurveyQuestionResponse {
   final String? imageUrl;
   final String? coverImageUrl;
   final double? coverImageOpacity;
-  final List<SurveyAnswerResponse> answers;
+  final List<SurveyAnswerResponse>? answers;
 
   SurveyQuestionResponse({
     required this.id,
