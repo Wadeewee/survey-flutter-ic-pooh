@@ -17,21 +17,25 @@ class GetSurveysInput {
 }
 
 @Injectable()
-class GetSurveysUseCase extends UseCase<List<SurveyModel>, GetSurveysInput> {
+class GetAndCacheSurveysUseCase
+    extends UseCase<List<SurveyModel>, GetSurveysInput> {
   final SurveyRepository _repository;
 
-  const GetSurveysUseCase(this._repository);
+  const GetAndCacheSurveysUseCase(this._repository);
 
   @override
   Future<Result<List<SurveyModel>>> call(GetSurveysInput params) {
     return _repository
-        .getSurveys(
-          number: params.pageNumber,
-          size: params.pageSize,
-        )
-        // ignore: unnecessary_cast
-        .then((value) => Success(value) as Result<List<SurveyModel>>)
-        .onError<NetworkExceptions>(
+        .getSurveys(number: params.pageNumber, size: params.pageSize)
+        .then((value) {
+      _saveSurveys(value);
+      // ignore: unnecessary_cast
+      return Success(value) as Result<List<SurveyModel>>;
+    }).onError<NetworkExceptions>(
             (exception, stackTrace) => Failed(UseCaseException(exception)));
+  }
+
+  void _saveSurveys(List<SurveyModel> surveys) async {
+    await _repository.saveSurveys(surveys);
   }
 }

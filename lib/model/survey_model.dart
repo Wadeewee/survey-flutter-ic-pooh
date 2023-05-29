@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:survey_flutter_ic/api/response/survey_response.dart';
+import 'package:survey_flutter_ic/database/dto/survey_dto.dart';
 
 class SurveyModel extends Equatable {
   final String id;
@@ -7,6 +8,7 @@ class SurveyModel extends Equatable {
   final String description;
   final bool isActive;
   final String coverImageUrl;
+  final String largeCoverImageUrl;
   final String createdAt;
   final String surveyType;
 
@@ -16,6 +18,7 @@ class SurveyModel extends Equatable {
     required this.description,
     required this.isActive,
     required this.coverImageUrl,
+    required this.largeCoverImageUrl,
     required this.createdAt,
     required this.surveyType,
   });
@@ -27,6 +30,7 @@ class SurveyModel extends Equatable {
         description,
         isActive,
         coverImageUrl,
+        largeCoverImageUrl,
         createdAt,
         surveyType,
       ];
@@ -38,8 +42,22 @@ class SurveyModel extends Equatable {
       description: response.description ?? '',
       isActive: response.isActive ?? false,
       coverImageUrl: response.coverImageUrl ?? '',
+      largeCoverImageUrl: '${response.coverImageUrl ?? ''}l',
       createdAt: response.createdAt ?? '',
       surveyType: response.surveyType ?? '',
+    );
+  }
+
+  factory SurveyModel.fromDto(SurveyDto dto) {
+    return SurveyModel(
+      id: dto.id,
+      title: dto.title,
+      description: dto.description,
+      isActive: dto.isActive,
+      coverImageUrl: dto.coverImageUrl,
+      largeCoverImageUrl: dto.largeCoverImageUrl,
+      createdAt: dto.createdAt,
+      surveyType: dto.surveyType,
     );
   }
 }
