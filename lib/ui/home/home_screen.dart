@@ -61,37 +61,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     List<SurveyModel> surveys,
   ) {
     return Scaffold(
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemCount: surveys.length,
-            itemBuilder: (_, index) {
-              return HomeSurveyItem(
-                survey: surveys[index],
-                onNextButtonPressed: () {
-                  context.goNamed(
-                    RoutePath.surveyDetail.name,
-                    extra: surveys[_currentIndex],
-                  );
-                },
-              );
-            },
-          ),
-          SafeArea(
-            child: HomeHeader(
-              date: today,
-              avatar: profileAvatar,
+      body: RefreshIndicator(
+        color: Colors.white,
+        backgroundColor: Colors.white30,
+        onRefresh: () {
+          _currentIndex = 0;
+          return ref
+              .read(homeViewModelProvider.notifier)
+              .loadData(isRefresh: true);
+        },
+        child: Stack(
+          children: [
+            _buildPagerView(surveys),
+            SafeArea(
+              child: HomeHeader(
+                date: today,
+                avatar: profileAvatar,
+              ),
             ),
-          ),
-          if (surveys.isNotEmpty) _buildPagerIndicator(surveys)
-        ],
+            ListView(
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
+            ),
+            if (surveys.isNotEmpty) _buildPagerIndicator(surveys)
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildPagerView(List<SurveyModel> surveys) {
+    return PageView.builder(
+      controller: _pageController,
+      onPageChanged: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      itemCount: surveys.length,
+      itemBuilder: (_, index) {
+        return HomeSurveyItem(
+          survey: surveys[index],
+          onNextButtonPressed: () {
+            context.goNamed(
+              RoutePath.surveyDetail.name,
+              extra: surveys[_currentIndex],
+            );
+          },
+        );
+      },
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:survey_flutter_ic/model/profile_model.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_state.dart';
 import 'package:survey_flutter_ic/usecase/base/base_use_case.dart';
+import 'package:survey_flutter_ic/usecase/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
 
@@ -17,6 +18,7 @@ final homeViewModelProvider =
         (_) => HomeViewModel(
               getIt.get<GetProfileUseCase>(),
               getIt.get<GetAndCacheSurveysUseCase>(),
+              getIt.get<GetCachedSurveysUseCase>(),
             ));
 
 final isLoadingProvider = StreamProvider.autoDispose(
@@ -34,10 +36,12 @@ final surveysProvider = StreamProvider.autoDispose(
 class HomeViewModel extends StateNotifier<HomeViewState> {
   final GetProfileUseCase _getProfileUseCase;
   final GetAndCacheSurveysUseCase _getAndCacheSurveysUseCase;
+  final GetCachedSurveysUseCase _getCachedSurveysUseCase;
 
   HomeViewModel(
     this._getProfileUseCase,
     this._getAndCacheSurveysUseCase,
+    this._getCachedSurveysUseCase,
   ) : super(const HomeViewState.init());
 
   final BehaviorSubject<bool> _isLoading = BehaviorSubject();
@@ -56,39 +60,62 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
 
   Stream<List<SurveyModel>> get surveys => _surveys.stream;
 
-  void loadData() async {
-    final profileStream = _getProfileUseCase.call().asStream();
-    final surveysStream = _getAndCacheSurveysUseCase
+  Future<void> loadData({bool isRefresh = false}) async {
+    if (isRefresh) {
+      getAndCacheSurveys();
+    } else {
+      ZipStream.zip2(
+        _getProfileUseCase.call().asStream(),
+        _getCachedSurveysUseCase.call().asStream(),
+        (profileResult, surveysResult) {
+          _today.add(DateTime.now().getFormattedString());
+
+          if (profileResult is Success<ProfileModel>) {
+            _profileAvatar.add(profileResult.value.avatarUrl);
+          }
+
+          handleSurveysResult(surveysResult, isCachedStream: true);
+        },
+      ).doOnListen(() {
+        _isLoading.add(true);
+      }).doOnDone(() {
+        _isLoading.add(false);
+      }).listen((_) {});
+    }
+  }
+
+  Future getAndCacheSurveys() async {
+    _getAndCacheSurveysUseCase
         .call(
           GetSurveysInput(
             pageNumber: _defaultFirstPageIndex,
             pageSize: _defaultPageSize,
           ),
         )
-        .asStream();
-
-    ZipStream.zip2(
-      profileStream,
-      surveysStream,
-      (profileResult, surveysResult) {
-        _today.add(DateTime.now().getFormattedString());
-
-        if (profileResult is Success<ProfileModel>) {
-          _profileAvatar.add(profileResult.value.avatarUrl);
-        }
-
-        if (surveysResult is Success<List<SurveyModel>>) {
-          _surveys.add(surveysResult.value);
-        } else {
-          final error = surveysResult as Failed<List<SurveyModel>>;
-          state = HomeViewState.error(error.getErrorMessage());
-        }
-      },
-    ).doOnListen(() {
+        .asStream()
+        .doOnListen(() {
       _isLoading.add(true);
     }).doOnDone(() {
       _isLoading.add(false);
-    }).listen((_) {});
+    }).listen((result) {
+      handleSurveysResult(result);
+    });
+  }
+
+  void handleSurveysResult(
+    Result<List<SurveyModel>> surveysResult, {
+    bool isCachedStream = false,
+  }) {
+    if (surveysResult is Success<List<SurveyModel>>) {
+      if (surveysResult.value.isEmpty && isCachedStream) {
+        getAndCacheSurveys();
+      } else {
+        _surveys.add(surveysResult.value);
+      }
+    } else {
+      final error = surveysResult as Failed<List<SurveyModel>>;
+      state = HomeViewState.error(error.getErrorMessage());
+    }
   }
 
   @override

@@ -15,6 +15,7 @@ void main() {
   group('HomeViewModel', () {
     late MockGetProfileUseCase mockGetProfileUseCase;
     late MockGetAndCacheSurveysUseCase mockGetAndCacheSurveysUseCase;
+    late MockGetCachedSurveysUseCase mockGetCachedSurveysUseCase;
     late HomeViewModel viewModel;
     late ProviderContainer container;
 
@@ -36,12 +37,13 @@ void main() {
     setUp(() {
       mockGetProfileUseCase = MockGetProfileUseCase();
       mockGetAndCacheSurveysUseCase = MockGetAndCacheSurveysUseCase();
+      mockGetCachedSurveysUseCase = MockGetCachedSurveysUseCase();
 
       container = ProviderContainer(overrides: [
         homeViewModelProvider.overrideWith((ref) => HomeViewModel(
-              mockGetProfileUseCase,
-              mockGetAndCacheSurveysUseCase,
-            ))
+            mockGetProfileUseCase,
+            mockGetAndCacheSurveysUseCase,
+            mockGetCachedSurveysUseCase))
       ]);
       viewModel = container.read(homeViewModelProvider.notifier);
       addTearDown(() => container.dispose());
@@ -49,6 +51,8 @@ void main() {
       when(mockGetProfileUseCase.call())
           .thenAnswer((_) async => Success(profile));
       when(mockGetAndCacheSurveysUseCase.call(any))
+          .thenAnswer((_) async => Success(surveys));
+      when(mockGetCachedSurveysUseCase.call())
           .thenAnswer((_) async => Success(surveys));
     });
 
@@ -89,10 +93,58 @@ void main() {
       container.read(homeViewModelProvider.notifier).loadData();
     });
 
-    test('When calling getSurveys successfully, it emits surveys', () {
+    test('When calling getCacheSurveys successfully, it emits surveys', () {
       expect(viewModel.surveys, emitsThrough(surveys));
 
       container.read(homeViewModelProvider.notifier).loadData();
+    });
+
+    test(
+        'When calling getCacheSurveys is empty with calling getSurveys successfully, it emits surveys',
+        () {
+      when(mockGetCachedSurveysUseCase.call())
+          .thenAnswer((_) async => Success([]));
+
+      expect(viewModel.surveys, emitsThrough(surveys));
+
+      container.read(homeViewModelProvider.notifier).loadData();
+    });
+
+    test(
+        'When calling getCacheSurveys is empty with calling getSurveys failed, it returns the error state',
+        () {
+      when(mockGetCachedSurveysUseCase.call())
+          .thenAnswer((_) async => Success([]));
+      when(mockGetAndCacheSurveysUseCase.call(any)).thenAnswer((_) async =>
+          Failed(
+              UseCaseException(const NetworkExceptions.defaultError("Error"))));
+
+      expect(
+          viewModel.stream,
+          emitsThrough(
+            const HomeViewState.error("Error"),
+          ));
+
+      container.read(homeViewModelProvider.notifier).loadData();
+    });
+
+    test('When calling getCacheSurveys failed, it returns the error state', () {
+      when(mockGetCachedSurveysUseCase.call()).thenAnswer((_) async => Failed(
+          UseCaseException(const NetworkExceptions.defaultError("Error"))));
+
+      expect(
+          viewModel.stream,
+          emitsThrough(
+            const HomeViewState.error("Error"),
+          ));
+
+      container.read(homeViewModelProvider.notifier).loadData();
+    });
+
+    test('When calling getSurveys successfully, it emits surveys', () {
+      expect(viewModel.surveys, emitsThrough(surveys));
+
+      container.read(homeViewModelProvider.notifier).loadData(isRefresh: true);
     });
 
     test('When calling getSurveys failed, it returns the error state', () {
@@ -106,7 +158,7 @@ void main() {
             const HomeViewState.error("Error"),
           ));
 
-      container.read(homeViewModelProvider.notifier).loadData();
+      container.read(homeViewModelProvider.notifier).loadData(isRefresh: true);
     });
   });
 }

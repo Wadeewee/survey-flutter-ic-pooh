@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:survey_flutter_ic/api/service/auth_service.dart';
 import 'package:survey_flutter_ic/api/service/survey_service.dart';
 import 'package:survey_flutter_ic/api/service/user_service.dart';
+import 'package:survey_flutter_ic/database/persistence/hive_persistence.dart';
 import 'package:survey_flutter_ic/di/provider/di.dart';
 import 'package:survey_flutter_ic/main.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
@@ -66,7 +67,8 @@ class TestUtil {
 
   static Future setupTestEnvironment() async {
     _initDependencies();
-    configureInjection();
+    await initHivePersistence();
+    await configureInjection();
 
     getIt.allowReassignment = true;
     getIt.registerSingleton<AuthService>(FakeAuthService());
