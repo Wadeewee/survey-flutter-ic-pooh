@@ -79,9 +79,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 avatar: profileAvatar,
               ),
             ),
-            ListView(
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
+            FractionallySizedBox(
+              heightFactor: 0.3,
+              child: ListView(),
             ),
             if (surveys.isNotEmpty) _buildPagerIndicator(surveys)
           ],
