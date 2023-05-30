@@ -21,7 +21,7 @@ abstract class AuthPersistence {
   Future<void> clearAllStorage();
 }
 
-@Singleton(as: AuthPersistence)
+@LazySingleton(as: AuthPersistence)
 class AuthPersistenceImpl extends AuthPersistence {
   final FlutterSecureStorage _storage;
 

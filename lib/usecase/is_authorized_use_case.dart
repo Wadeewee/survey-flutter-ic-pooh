@@ -12,7 +12,8 @@ class IsAuthorizedUseCase extends NoParamsUseCase<bool> {
 
   @override
   Future<Result<bool>> call() async {
-    final isAuthorized = await _persistence.accessToken != null;
+    final result = await _persistence.accessToken;
+    final isAuthorized = result != null && result.isNotEmpty;
 
     return Success(isAuthorized);
   }
