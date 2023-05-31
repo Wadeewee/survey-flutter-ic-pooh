@@ -14,13 +14,14 @@ final surveyQuestionsViewModelProvider = StateNotifierProvider.autoDispose<
 final isLoadingProvider = StreamProvider.autoDispose(
     (ref) => ref.watch(surveyQuestionsViewModelProvider.notifier).isLoading);
 
-final surveyQuestionProvider = StreamProvider.autoDispose((ref) =>
-    ref.watch(surveyQuestionsViewModelProvider.notifier).surveyQuestion);
+final currentIndexProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(surveyQuestionsViewModelProvider.notifier).currentIndex);
+
+final surveyQuestionsProvider = StreamProvider.autoDispose((ref) =>
+    ref.watch(surveyQuestionsViewModelProvider.notifier).surveyQuestions);
 
 class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
   final GetSurveyDetailUseCase _getSurveyDetailUseCase;
-
-  List<SurveyQuestionModel> surveyQuestions = [];
 
   SurveyQuestionsViewModel(this._getSurveyDetailUseCase)
       : super(const SurveyQuestionsViewState.init());
@@ -29,10 +30,15 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
 
   Stream<bool> get isLoading => _isLoading.stream;
 
-  final BehaviorSubject<SurveyQuestionModel> _surveyQuestion =
+  final BehaviorSubject<int> _currentIndex = BehaviorSubject();
+
+  Stream<int> get currentIndex => _currentIndex.stream;
+
+  final BehaviorSubject<List<SurveyQuestionModel>> _surveyQuestions =
       BehaviorSubject();
 
-  Stream<SurveyQuestionModel> get surveyQuestion => _surveyQuestion.stream;
+  Stream<List<SurveyQuestionModel>> get surveyQuestions =>
+      _surveyQuestions.stream;
 
   void getSurveyDetail(String surveyId) async {
     _getSurveyDetailUseCase.call(surveyId).asStream().doOnListen(() {
@@ -41,8 +47,7 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
       _isLoading.add(false);
     }).listen((result) {
       if (result is Success<SurveyDetailModel>) {
-        surveyQuestions = result.value.questions;
-        _surveyQuestion.add(surveyQuestions.first);
+        _surveyQuestions.add(result.value.questions);
       } else {
         final error = result as Failed<SurveyDetailModel>;
         state = SurveyQuestionsViewState.error(error.getErrorMessage());
@@ -50,13 +55,16 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
     });
   }
 
-  void getNextSurveyQuestion(int index) async {
-    _surveyQuestion.add(surveyQuestions[index]);
+  void nextQuestion() async {
+    final index = _currentIndex.hasValue ? _currentIndex.value : 0;
+    _currentIndex.add(index + 1);
   }
 
   @override
   void dispose() async {
-    _surveyQuestion.close();
+    _isLoading.close();
+    _currentIndex.close();
+    _surveyQuestions.close();
     super.dispose();
   }
 }

@@ -28,7 +28,6 @@ void main() {
           coverImageUrl: "coverImageUrl",
           largeCoverImageUrl: "largeCoverImageUrl",
           answers: [],
-          totalQuestions: 0,
         ),
       ],
     );
@@ -67,8 +66,8 @@ void main() {
     test('When calling getSurveyDetail successfully, it emits surveyQuestion',
         () {
       expect(
-        viewModel.surveyQuestion,
-        emitsThrough(surveyDetail.questions.first),
+        viewModel.surveyQuestions,
+        emitsThrough(surveyDetail.questions),
       );
 
       container
@@ -91,26 +90,13 @@ void main() {
           .getSurveyDetail("surveyId");
     });
 
-    test(
-        'When calling getNextSurveyQuestion with index, it emits surveyQuestion',
-        () {
+    test('When calling nextQuestion, it emits currentIndex', () {
       expect(
-        viewModel.surveyQuestion,
-        emitsInAnyOrder([
-          surveyDetail.questions.first,
-          surveyDetail.questions.first,
-        ]),
+        viewModel.currentIndex,
+        emitsThrough(1),
       );
 
-      container
-          .read(surveyQuestionsViewModelProvider.notifier)
-          .getSurveyDetail("surveyId");
-
-      viewModel.surveyQuestions = surveyDetail.questions;
-
-      container
-          .read(surveyQuestionsViewModelProvider.notifier)
-          .getNextSurveyQuestion(0);
+      container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
     });
   });
 }

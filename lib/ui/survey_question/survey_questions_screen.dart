@@ -22,8 +22,6 @@ class SurveyQuestionsScreen extends ConsumerStatefulWidget {
 }
 
 class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +33,8 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(isLoadingProvider).value ?? false;
-    final surveyQuestion = ref.watch(surveyQuestionProvider).value;
+    final currentIndex = ref.watch(currentIndexProvider).value ?? 0;
+    final surveyQuestions = ref.watch(surveyQuestionsProvider).value ?? [];
 
     ref.listen<SurveyQuestionsViewState>(surveyQuestionsViewModelProvider,
         (_, state) {
@@ -48,19 +47,27 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     if (isLoading) {
       return _buildLoadingIndicator();
     } else {
-      return _buildSurveyQuestionsScreenContent(surveyQuestion);
+      if (surveyQuestions.isNotEmpty) {
+        return _buildSurveyQuestionsScreenContent(
+          currentIndex,
+          surveyQuestions,
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
     }
   }
 
   Widget _buildSurveyQuestionsScreenContent(
-    SurveyQuestionModel? surveyQuestion,
+    int currentIndex,
+    List<SurveyQuestionModel> surveyQuestions,
   ) {
-    final totalQuestions = surveyQuestion?.totalQuestions ?? 0;
     return Scaffold(
       body: Stack(
         children: [
-          if (surveyQuestion != null)
-            _buildCoverImageUrl(surveyQuestion.largeCoverImageUrl),
+          _buildCoverImageUrl(
+            surveyQuestions[currentIndex].largeCoverImageUrl,
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(space20),
@@ -69,13 +76,15 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
                 children: [
                   _buildCloseButton(),
                   const SizedBox(height: space30),
-                  if (totalQuestions > 0)
-                    _buildQuestionsIndicator(totalQuestions),
+                  _buildQuestionsIndicator(
+                    currentIndex,
+                    surveyQuestions.length,
+                  ),
                   const SizedBox(height: space10),
-                  _buildQuestionLabel(surveyQuestion?.text ?? ''),
+                  // TODO: Create Viewpager
+                  _buildQuestionLabel(surveyQuestions[currentIndex].text),
                   const Expanded(child: SizedBox.shrink()),
-                  // TODO: Update the logic to show the next button
-                  if (totalQuestions > 0) _buildNextButton(),
+                  _buildNextButton(),
                 ],
               ),
             ),
@@ -106,9 +115,12 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildQuestionsIndicator(int totalQuestions) {
+  Widget _buildQuestionsIndicator(
+    int currentIndex,
+    int totalQuestions,
+  ) {
     return Text(
-      "${_currentIndex + 1}/$totalQuestions",
+      "${currentIndex + 1}/$totalQuestions",
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
         fontSize: fontSize17,
@@ -133,10 +145,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
       alignment: Alignment.bottomRight,
       child: CircleNextButton(
         onPressed: () {
-          ref
-              .read(surveyQuestionsViewModelProvider.notifier)
-              .getNextSurveyQuestion(_currentIndex + 1);
-          _currentIndex++;
+          ref.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
         },
       ),
     );
