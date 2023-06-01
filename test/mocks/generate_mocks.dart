@@ -12,6 +12,7 @@ import 'package:survey_flutter_ic/database/persistence/survey_persistence.dart';
 import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
+import 'package:survey_flutter_ic/usecase/get_survey_detail_use_case.dart';
 import 'package:survey_flutter_ic/usecase/is_authorized_use_case.dart';
 import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
 
@@ -31,6 +32,7 @@ import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
   SurveyPersistence,
   Box,
   IsAuthorizedUseCase,
+  GetSurveyDetailUseCase,
 ])
 main() {
   // empty class to generate mock repository classes
