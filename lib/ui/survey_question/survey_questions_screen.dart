@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_question_item.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
@@ -22,6 +25,8 @@ class SurveyQuestionsScreen extends ConsumerStatefulWidget {
 }
 
 class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
+  final PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
@@ -81,10 +86,13 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
                     surveyQuestions.length,
                   ),
                   const SizedBox(height: space10),
-                  // TODO: Create Viewpager
-                  _buildQuestionLabel(surveyQuestions[currentIndex].text),
-                  const Expanded(child: SizedBox.shrink()),
-                  _buildNextButton(),
+                  Expanded(
+                    child: _buildAnswerPagerView(
+                      surveyQuestions,
+                      currentIndex,
+                    ),
+                  ),
+                  _buildNextButton(currentIndex),
                 ],
               ),
             ),
@@ -107,11 +115,19 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
   }
 
   Widget _buildCoverImageUrl(String largeCoverImageUrl) {
-    return Image.network(
-      largeCoverImageUrl,
-      fit: BoxFit.cover,
+    return Container(
       width: double.infinity,
       height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: Image.network(largeCoverImageUrl).image,
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: const SizedBox(),
+      ),
     );
   }
 
@@ -129,23 +145,39 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildQuestionLabel(String question) {
-    return Text(
-      question,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: fontSize34,
-        fontWeight: FontWeight.w800,
+  Widget _buildAnswerPagerView(
+    List<SurveyQuestionModel> surveyQuestions,
+    int currentIndex,
+  ) {
+    return PageView.builder(
+      controller: _pageController,
+      physics: const NeverScrollableScrollPhysics(),
+      onPageChanged: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      itemCount: surveyQuestions.length,
+      itemBuilder: (_, index) => SurveyQuestionItem(
+        surveyQuestion: surveyQuestions[currentIndex],
+        onDropdownSelect: (result) {
+          // TODO: Trigger VM on Integration task
+        },
       ),
     );
   }
 
-  Widget _buildNextButton() {
+  Widget _buildNextButton(int currentIndex) {
     return Align(
       alignment: Alignment.bottomRight,
       child: CircleNextButton(
         onPressed: () {
           ref.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+          _pageController.animateToPage(
+            currentIndex + 1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         },
       ),
     );
