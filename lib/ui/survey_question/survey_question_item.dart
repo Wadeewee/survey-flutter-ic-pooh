@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_dropdown.dart';
+import 'package:survey_flutter_ic/ui/survey_question/answer/answer_emoji_rating.dart';
 
 class SurveyQuestionItem extends StatelessWidget {
   final SurveyQuestionModel surveyQuestion;
-  final Function(SurveyAnswerModel) onDropdownSelect;
 
   const SurveyQuestionItem({
     super.key,
     required this.surveyQuestion,
-    required this.onDropdownSelect,
   });
 
   @override
@@ -23,13 +21,7 @@ class SurveyQuestionItem extends StatelessWidget {
     return Column(
       children: [
         _buildQuestionLabel(surveyQuestion.text),
-        Expanded(
-          // TODO: Handle widget to match with display type
-          child: AnswerDropdown(
-            answers: surveyQuestion.answers,
-            onSelect: (result) => onDropdownSelect.call(result),
-          ),
-        ),
+        Expanded(child: _buildAnswerItem()),
       ],
     );
   }
@@ -43,5 +35,23 @@ class SurveyQuestionItem extends StatelessWidget {
         fontWeight: FontWeight.w800,
       ),
     );
+  }
+
+  Widget _buildAnswerItem() {
+    switch (surveyQuestion.displayType) {
+      case DisplayType.dropdown:
+        return AnswerDropdown(
+          answers: surveyQuestion.answers,
+        );
+      case DisplayType.smiley:
+      case DisplayType.star:
+      case DisplayType.heart:
+        return AnswerEmojiRating(
+          displayType: surveyQuestion.displayType,
+          answers: surveyQuestion.answers,
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
