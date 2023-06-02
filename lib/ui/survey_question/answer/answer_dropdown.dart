@@ -14,8 +14,7 @@ class AnswerDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
+    return Center(
       child: Picker(
         adapter: PickerDataAdapter<String>(
           pickerData: answers.map((answer) => answer.text).toList(),
