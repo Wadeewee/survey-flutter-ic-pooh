@@ -72,6 +72,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
         children: [
           _buildCoverImageUrl(
             surveyQuestions[currentIndex].largeCoverImageUrl,
+            surveyQuestions[currentIndex].coverImageOpacity,
           ),
           SafeArea(
             child: Padding(
@@ -114,18 +115,25 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildCoverImageUrl(String largeCoverImageUrl) {
+  Widget _buildCoverImageUrl(
+    String largeCoverImageUrl,
+    double coverImageOpacity,
+  ) {
     return Container(
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: Image.network(largeCoverImageUrl).image,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(coverImageOpacity),
+            BlendMode.darken,
+          ),
           fit: BoxFit.cover,
         ),
       ),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: const SizedBox(),
       ),
     );

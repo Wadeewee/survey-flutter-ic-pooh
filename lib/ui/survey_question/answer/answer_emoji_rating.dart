@@ -30,7 +30,7 @@ class AnswerEmojiRating extends ConsumerWidget {
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       itemCount: _maxAnswerChoices,
-      itemBuilder: (context, index) {
+      itemBuilder: (_, index) {
         return GestureDetector(
           onTap: () {
             ref.read(selectedEmojiIndexProvider.notifier).state = index;
