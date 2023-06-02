@@ -160,9 +160,6 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
       itemCount: surveyQuestions.length,
       itemBuilder: (_, index) => SurveyQuestionItem(
         surveyQuestion: surveyQuestions[currentIndex],
-        onDropdownSelect: (result) {
-          // TODO: Trigger VM on Integration task
-        },
       ),
     );
   }
