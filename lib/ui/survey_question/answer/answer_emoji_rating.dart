@@ -5,12 +5,12 @@ import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 
-const defaultSelectedEmojiIndex = 2;
-const maxAnswerChoices = 5;
-const List<String> faceModes = ['😡', '😕', '😐', '🙂', '😄'];
+const _defaultSelectedEmojiIndex = 2;
+const _maxAnswerChoices = 5;
+const List<String> _faceModes = ['😡', '😕', '😐', '🙂', '😄'];
 
 final selectedEmojiIndexProvider =
-    StateProvider.autoDispose<int>((_) => defaultSelectedEmojiIndex);
+    StateProvider.autoDispose<int>((_) => _defaultSelectedEmojiIndex);
 
 class AnswerEmojiRating extends ConsumerWidget {
   final DisplayType displayType;
@@ -29,7 +29,7 @@ class AnswerEmojiRating extends ConsumerWidget {
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      itemCount: maxAnswerChoices,
+      itemCount: _maxAnswerChoices,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
@@ -39,9 +39,9 @@ class AnswerEmojiRating extends ConsumerWidget {
           },
           child: Center(
             child: Text(
-              getEmoji(displayType, index),
+              _getEmoji(displayType, index),
               style: TextStyle(
-                color: getColor(displayType, index, selectedAnswerIndex),
+                color: _getColor(displayType, index, selectedAnswerIndex),
                 fontSize: fontSize34,
               ),
             ),
@@ -54,13 +54,13 @@ class AnswerEmojiRating extends ConsumerWidget {
     );
   }
 
-  String getEmoji(
+  String _getEmoji(
     DisplayType displayType,
     int index,
   ) {
     switch (displayType) {
       case DisplayType.smiley:
-        return faceModes[index];
+        return _faceModes[index];
       case DisplayType.star:
         return '⭐️';
       case DisplayType.heart:
@@ -70,7 +70,7 @@ class AnswerEmojiRating extends ConsumerWidget {
     }
   }
 
-  Color getColor(
+  Color _getColor(
     DisplayType displayType,
     int index,
     int selectedAnswerIndex,
