@@ -20,8 +20,16 @@ class SurveyQuestionItem extends StatelessWidget {
   Widget _buildPageItem(SurveyQuestionModel surveyQuestion) {
     return Column(
       children: [
-        _buildQuestionLabel(surveyQuestion.text),
-        Expanded(child: _buildAnswerItem()),
+        if (surveyQuestion.answers.isNotEmpty)
+          _buildQuestionLabel(surveyQuestion.text)
+        else
+          Expanded(
+            child: SingleChildScrollView(
+              child: _buildQuestionLabel(surveyQuestion.text),
+            ),
+          ),
+        if (surveyQuestion.answers.isNotEmpty)
+          Expanded(child: _buildAnswerItem())
       ],
     );
   }
