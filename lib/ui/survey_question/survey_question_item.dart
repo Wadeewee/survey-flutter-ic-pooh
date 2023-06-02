@@ -3,6 +3,7 @@ import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_dropdown.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_emoji_rating.dart';
+import 'package:survey_flutter_ic/ui/survey_question/answer/answer_textarea.dart';
 
 class SurveyQuestionItem extends StatelessWidget {
   final SurveyQuestionModel surveyQuestion;
@@ -41,6 +42,10 @@ class SurveyQuestionItem extends StatelessWidget {
     switch (surveyQuestion.displayType) {
       case DisplayType.dropdown:
         return AnswerDropdown(
+          answers: surveyQuestion.answers,
+        );
+      case DisplayType.textarea:
+        return AnswerTextArea(
           answers: surveyQuestion.answers,
         );
       case DisplayType.smiley:
