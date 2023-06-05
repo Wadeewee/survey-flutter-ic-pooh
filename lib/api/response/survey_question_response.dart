@@ -13,6 +13,7 @@ class SurveyQuestionResponse {
   final String? imageUrl;
   final String? coverImageUrl;
   final double? coverImageOpacity;
+  final String? pick;
   final List<SurveyAnswerResponse>? answers;
 
   SurveyQuestionResponse({
@@ -23,6 +24,7 @@ class SurveyQuestionResponse {
     required this.imageUrl,
     required this.coverImageUrl,
     required this.coverImageOpacity,
+    required this.pick,
     required this.answers,
   });
 
