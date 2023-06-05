@@ -52,12 +52,12 @@ class AnswerForm extends StatelessWidget {
       textInputAction: index == (answers.length - 1)
           ? TextInputAction.done
           : TextInputAction.next,
-      onChanged: (input) => {
+      onChanged: (input) {
         // TODO: Trigger VM on Integration of submit task
       },
-      onSubmitted: (input) => {
+      onSubmitted: (input) {
         // TODO: Trigger VM on Integration of submit task
-        showToastMessage(input)
+        showToastMessage(input);
       },
     );
   }
