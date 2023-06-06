@@ -1,9 +1,15 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
+import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_question_item.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
 
 class SurveyQuestionsScreen extends ConsumerStatefulWidget {
@@ -19,17 +25,55 @@ class SurveyQuestionsScreen extends ConsumerStatefulWidget {
 }
 
 class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
+  final PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
+    ref.read(surveyQuestionsViewModelProvider.notifier).getSurveyDetail(
+          widget.surveyId,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(isLoadingProvider).value ?? false;
+    final currentIndex = ref.watch(currentIndexProvider).value ?? 0;
+    final surveyQuestions = ref.watch(surveyQuestionsProvider).value ?? [];
+
+    ref.listen<SurveyQuestionsViewState>(surveyQuestionsViewModelProvider,
+        (_, state) {
+      state.maybeWhen(
+        error: (message) => showToastMessage(message),
+        orElse: () {},
+      );
+    });
+
+    if (isLoading) {
+      return _buildLoadingIndicator();
+    } else {
+      if (surveyQuestions.isNotEmpty) {
+        return _buildSurveyQuestionsScreenContent(
+          currentIndex,
+          surveyQuestions,
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
+  }
+
+  Widget _buildSurveyQuestionsScreenContent(
+    int currentIndex,
+    List<SurveyQuestionModel> surveyQuestions,
+  ) {
     return Scaffold(
       body: Stack(
         children: [
-          _buildCoverImageUrl(),
+          _buildCoverImageUrl(
+            surveyQuestions[currentIndex].largeCoverImageUrl,
+            surveyQuestions[currentIndex].coverImageOpacity,
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(space20),
@@ -38,11 +82,18 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
                 children: [
                   _buildCloseButton(),
                   const SizedBox(height: space30),
-                  _buildQuestionsIndicator(),
+                  _buildQuestionsIndicator(
+                    currentIndex,
+                    surveyQuestions.length,
+                  ),
                   const SizedBox(height: space10),
-                  _buildQuestionLabel(),
-                  const Expanded(child: SizedBox.shrink()),
-                  _buildNextButton(),
+                  Expanded(
+                    child: _buildAnswerPagerView(
+                      surveyQuestions,
+                      currentIndex,
+                    ),
+                  ),
+                  _buildNextButton(currentIndex),
                 ],
               ),
             ),
@@ -64,20 +115,36 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildCoverImageUrl() {
-    return Image.network(
-      // TODO: Bind data from VM.
-      "https://i.postimg.cc/NjT59j53/Background-3x.jpg",
-      fit: BoxFit.cover,
+  Widget _buildCoverImageUrl(
+    String largeCoverImageUrl,
+    double coverImageOpacity,
+  ) {
+    return Container(
       width: double.infinity,
       height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: Image.network(largeCoverImageUrl).image,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(coverImageOpacity),
+            BlendMode.darken,
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: const SizedBox(),
+      ),
     );
   }
 
-  Widget _buildQuestionsIndicator() {
+  Widget _buildQuestionsIndicator(
+    int currentIndex,
+    int totalQuestions,
+  ) {
     return Text(
-      // TODO: Bind data from VM.
-      "1/5",
+      "${currentIndex + 1}/$totalQuestions",
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
         fontSize: fontSize17,
@@ -86,27 +153,48 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
-  Widget _buildQuestionLabel() {
-    return const Text(
-      // TODO: Bind data from VM.
-      "How fulfilled did you fell during this WFH period?",
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: fontSize34,
-        fontWeight: FontWeight.w800,
+  Widget _buildAnswerPagerView(
+    List<SurveyQuestionModel> surveyQuestions,
+    int currentIndex,
+  ) {
+    return PageView.builder(
+      controller: _pageController,
+      physics: const NeverScrollableScrollPhysics(),
+      onPageChanged: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      itemCount: surveyQuestions.length,
+      itemBuilder: (_, index) => SurveyQuestionItem(
+        surveyQuestion: surveyQuestions[currentIndex],
       ),
     );
   }
 
-  Widget _buildNextButton() {
+  Widget _buildNextButton(int currentIndex) {
     return Align(
       alignment: Alignment.bottomRight,
       child: CircleNextButton(
         onPressed: () {
-          // TODO: Show the next question
-          showToastMessage("Next question");
+          ref.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+          _pageController.animateToPage(
+            currentIndex + 1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         },
       ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
+          child: const CircularProgressIndicator(
+            color: Colors.white,
+          )),
     );
   }
 }
