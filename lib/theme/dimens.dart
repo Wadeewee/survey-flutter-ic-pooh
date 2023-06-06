@@ -22,3 +22,5 @@ const double pagerIndicatorSize = 8.0;
 
 const double dropdownItemHeight = 56.0;
 const double dropdownItemDividerHeight = 0.5;
+
+const double npsAnswerHeight = 60.0;
