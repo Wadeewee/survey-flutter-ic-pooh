@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
 const _defaultSelectedEmojiIndex = 2;
 const _maxAnswerChoices = 5;
@@ -26,6 +27,21 @@ class AnswerEmojiRating extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAnswerIndex = ref.watch(selectedEmojiIndexProvider);
 
+    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
+      if (displayType.value == DisplayType.smiley ||
+          displayType.value == DisplayType.heart ||
+          displayType.value == DisplayType.star) {
+        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+              SubmitSurveyAnswerModel(
+                id: answers[selectedAnswerIndex].id,
+                answer: answers[selectedAnswerIndex].text,
+              ),
+            );
+        ref.read(selectedEmojiIndexProvider.notifier).state =
+            _defaultSelectedEmojiIndex;
+      }
+    });
+
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -34,8 +50,6 @@ class AnswerEmojiRating extends ConsumerWidget {
         return GestureDetector(
           onTap: () {
             ref.read(selectedEmojiIndexProvider.notifier).state = index;
-            // TODO: Trigger VM on Integration of submit task and reset index to default
-            showToastMessage(answers[index].text);
           },
           child: Center(
             child: Text(
