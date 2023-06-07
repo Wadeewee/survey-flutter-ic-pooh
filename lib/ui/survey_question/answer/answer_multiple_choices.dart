@@ -55,8 +55,14 @@ class AnswerMultipleChoices extends ConsumerWidget {
                 activeColor: Colors.white,
                 checkColor: Colors.black,
                 value: selectedIndex.contains(index),
-                onChanged: (bool? value) =>
-                    _handleAnswerSelection(ref, index, value),
+                onChanged: (bool? value) {
+                  _handleAnswerSelection(
+                    ref,
+                    selectedIndex,
+                    index,
+                    value,
+                  );
+                },
               )
             ],
           );
@@ -73,10 +79,10 @@ class AnswerMultipleChoices extends ConsumerWidget {
 
   void _handleAnswerSelection(
     WidgetRef ref,
+    List<int> selectedIndex,
     int index,
     bool? value,
   ) {
-    final selectedIndex = ref.watch(selectedChoicesIndexProvider);
     final newSelectedChoicesIndex = List<int>.from(selectedIndex);
 
     if (selectionType == SelectionType.one) {
