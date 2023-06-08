@@ -16,6 +16,12 @@ enum DisplayType {
   unknown,
 }
 
+enum SelectionType {
+  one,
+  any,
+  none,
+}
+
 class SurveyQuestionModel extends Equatable {
   final String id;
   final String text;
@@ -24,6 +30,7 @@ class SurveyQuestionModel extends Equatable {
   final String coverImageUrl;
   final String largeCoverImageUrl;
   final double coverImageOpacity;
+  final SelectionType selectionType;
   final List<SurveyAnswerModel> answers;
 
   const SurveyQuestionModel({
@@ -34,6 +41,7 @@ class SurveyQuestionModel extends Equatable {
     required this.coverImageOpacity,
     required this.coverImageUrl,
     required this.largeCoverImageUrl,
+    required this.selectionType,
     required this.answers,
   });
 
@@ -61,6 +69,10 @@ class SurveyQuestionModel extends Equatable {
       coverImageOpacity: response.coverImageOpacity ?? 0.0,
       coverImageUrl: response.coverImageUrl ?? '',
       largeCoverImageUrl: '${response.coverImageUrl ?? ''}l',
+      selectionType: SelectionType.values.firstWhere(
+        (element) => element.name == response.pick,
+        orElse: () => SelectionType.none,
+      ),
       answers: (response.answers ?? [])
           .map((e) => SurveyAnswerModel.fromResponse(e))
           .toList(),
