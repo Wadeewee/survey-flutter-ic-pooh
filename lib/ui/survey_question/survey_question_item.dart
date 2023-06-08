@@ -4,6 +4,7 @@ import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_dropdown.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_emoji_rating.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_form.dart';
+import 'package:survey_flutter_ic/ui/survey_question/answer/answer_multiple_choices.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_nps.dart';
 import 'package:survey_flutter_ic/ui/survey_question/answer/answer_textarea.dart';
 
@@ -65,6 +66,11 @@ class SurveyQuestionItem extends StatelessWidget {
       case DisplayType.nps:
         return AnswerNps(
           answers: surveyQuestion.answers,
+        );
+      case DisplayType.choice:
+        return AnswerMultipleChoices(
+          answers: surveyQuestion.answers,
+          selectionType: surveyQuestion.selectionType,
         );
       case DisplayType.smiley:
       case DisplayType.star:

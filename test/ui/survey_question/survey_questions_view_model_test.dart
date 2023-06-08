@@ -27,6 +27,7 @@ void main() {
           coverImageOpacity: 0.0,
           coverImageUrl: "coverImageUrl",
           largeCoverImageUrl: "largeCoverImageUrl",
+          selectionType: SelectionType.none,
           answers: [],
         ),
       ],
