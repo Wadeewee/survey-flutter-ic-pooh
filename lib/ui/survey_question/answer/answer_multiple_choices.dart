@@ -21,7 +21,7 @@ class AnswerMultipleChoices extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIndex = ref.watch(selectedChoicesIndexProvider);
+    final selectedIndexes = ref.watch(selectedChoicesIndexProvider);
 
     return Center(
       child: ListView.separated(
@@ -35,11 +35,11 @@ class AnswerMultipleChoices extends ConsumerWidget {
                 child: Text(
                   answers[index].text,
                   style: TextStyle(
-                    color: selectedIndex.contains(index)
+                    color: selectedIndexes.contains(index)
                         ? Colors.white
                         : Colors.white.withOpacity(0.5),
                     fontSize: fontSize20,
-                    fontWeight: selectedIndex.contains(index)
+                    fontWeight: selectedIndexes.contains(index)
                         ? FontWeight.w800
                         : FontWeight.w400,
                   ),
@@ -48,19 +48,19 @@ class AnswerMultipleChoices extends ConsumerWidget {
               Checkbox(
                 shape: const CircleBorder(),
                 side: BorderSide(
-                  color: selectedIndex.contains(index)
+                  color: selectedIndexes.contains(index)
                       ? Colors.white
                       : Colors.white.withOpacity(0.5),
                 ),
                 activeColor: Colors.white,
                 checkColor: Colors.black,
-                value: selectedIndex.contains(index),
-                onChanged: (bool? value) {
+                value: selectedIndexes.contains(index),
+                onChanged: (bool? isSelected) {
                   _handleAnswerSelection(
                     ref,
-                    selectedIndex,
+                    selectedIndexes,
                     index,
-                    value,
+                    isSelected,
                   );
                 },
               )
@@ -79,17 +79,17 @@ class AnswerMultipleChoices extends ConsumerWidget {
 
   void _handleAnswerSelection(
     WidgetRef ref,
-    List<int> selectedIndex,
+    List<int> selectedIndexes,
     int index,
-    bool? value,
+    bool? isSelected,
   ) {
-    final newSelectedChoicesIndex = List<int>.from(selectedIndex);
+    final newSelectedChoicesIndex = List<int>.from(selectedIndexes);
 
     if (selectionType == SelectionType.one) {
       newSelectedChoicesIndex.clear();
     }
 
-    if (value == true) {
+    if (isSelected == true) {
       newSelectedChoicesIndex.add(index);
     } else {
       newSelectedChoicesIndex.remove(index);
@@ -97,6 +97,6 @@ class AnswerMultipleChoices extends ConsumerWidget {
 
     ref.read(selectedChoicesIndexProvider.notifier).state =
         newSelectedChoicesIndex;
-    // TODO: Trigger VM on Integration of submit task
+    // TODO: Trigger VM on Integration of submit task and reset index to default
   }
 }
