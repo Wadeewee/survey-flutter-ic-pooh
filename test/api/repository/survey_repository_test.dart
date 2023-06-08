@@ -1,7 +1,6 @@
 import 'package:flutter_config/flutter_config.dart';
 import 'package:survey_flutter_ic/api/exception/network_exceptions.dart';
 import 'package:survey_flutter_ic/api/repository/survey_repository.dart';
-import 'package:survey_flutter_ic/api/request/submit_survey_request.dart';
 import 'package:survey_flutter_ic/api/response/survey_detail_response.dart';
 import 'package:survey_flutter_ic/api/response/surveys_response.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,11 +36,6 @@ void main() {
     ];
 
     final surveys = surveysDto.map((e) => SurveyModel.fromDto(e)).toList();
-
-    final submitSurveyRequest = SubmitSurveyRequest(
-      surveyId: 'survey_id',
-      questions: [],
-    );
 
     setUp(() {
       mockSurveyService = MockSurveyService();
@@ -147,7 +141,8 @@ void main() {
       when(mockSurveyService.submitSurvey(any)).thenAnswer((_) async => []);
 
       final result = await repository.submitSurvey(
-        submitSurveyRequest: submitSurveyRequest,
+        surveyId: 'surveyId',
+        questions: [],
       );
 
       expect(() async => result, isA<void>());
@@ -157,8 +152,10 @@ void main() {
         () async {
       when(mockSurveyService.submitSurvey(any)).thenThrow(MockDioError());
 
-      result() =>
-          repository.submitSurvey(submitSurveyRequest: submitSurveyRequest);
+      result() => repository.submitSurvey(
+            surveyId: 'surveyId',
+            questions: [],
+          );
 
       expect(result, throwsA(isA<NetworkExceptions>()));
     });
