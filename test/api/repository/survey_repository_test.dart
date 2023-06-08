@@ -135,5 +135,29 @@ void main() {
         mockSurveyPersistence.add(surveysDto),
       ]);
     });
+
+    test('When calling SubmitSurvey successfully, it returns empty result',
+        () async {
+      when(mockSurveyService.submitSurvey(any)).thenAnswer((_) async => []);
+
+      final result = await repository.submitSurvey(
+        surveyId: 'surveyId',
+        questions: [],
+      );
+
+      expect(() async => result, isA<void>());
+    });
+
+    test('When calling SubmitSurvey failed, it returns NetworkExceptions error',
+        () async {
+      when(mockSurveyService.submitSurvey(any)).thenThrow(MockDioError());
+
+      result() => repository.submitSurvey(
+            surveyId: 'surveyId',
+            questions: [],
+          );
+
+      expect(result, throwsA(isA<NetworkExceptions>()));
+    });
   });
 }

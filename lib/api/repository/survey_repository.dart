@@ -1,8 +1,11 @@
 import 'package:injectable/injectable.dart';
 import 'package:survey_flutter_ic/api/exception/network_exceptions.dart';
+import 'package:survey_flutter_ic/api/request/submit_survey_question_request.dart';
+import 'package:survey_flutter_ic/api/request/submit_survey_request.dart';
 import 'package:survey_flutter_ic/api/service/survey_service.dart';
 import 'package:survey_flutter_ic/database/dto/survey_dto.dart';
 import 'package:survey_flutter_ic/database/persistence/survey_persistence.dart';
+import 'package:survey_flutter_ic/model/submit_survey_question_model.dart';
 import 'package:survey_flutter_ic/model/survey_detail_model.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 
@@ -19,6 +22,11 @@ abstract class SurveyRepository {
   Future<List<SurveyModel>> getCachedSurveys();
 
   Future<void> saveSurveys(List<SurveyModel> surveys);
+
+  Future<void> submitSurvey({
+    required String surveyId,
+    required List<SubmitSurveyQuestionModel> questions,
+  });
 }
 
 @LazySingleton(as: SurveyRepository)
@@ -78,5 +86,22 @@ class SurveyRepositoryImpl extends SurveyRepository {
 
   Future<void> clearCachedSurveys() async {
     _surveyPersistence.clear();
+  }
+
+  @override
+  Future<void> submitSurvey({
+    required String surveyId,
+    required List<SubmitSurveyQuestionModel> questions,
+  }) async {
+    try {
+      return await _surveyService.submitSurvey(SubmitSurveyRequest(
+        surveyId: surveyId,
+        questions: questions
+            .map((model) => SubmitSurveyQuestionRequest.fromModel(model))
+            .toList(),
+      ));
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
   }
 }
