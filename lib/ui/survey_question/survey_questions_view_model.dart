@@ -116,9 +116,11 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
       _isLoading.add(false);
     }).listen((result) {
       if (result is Success<void>) {
-        // TODO: navigate to thanks screen in part 2
+        _submitSurveyQuestions.clear();
+        state = const SurveyQuestionsViewState.navigateToCompletionScreen();
       } else {
-        // TODO: show dialog in part 2
+        final error = result as Failed<void>;
+        state = SurveyQuestionsViewState.error(error.getErrorMessage());
       }
     });
   }

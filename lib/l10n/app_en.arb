@@ -1,5 +1,6 @@
 {
-  "hello": "Hello!",
+  "alert_dialog_button_action_ok": "Ok",
+  "alert_dialog_title_error": "Error",
 
   "home_today": "Today",
 
