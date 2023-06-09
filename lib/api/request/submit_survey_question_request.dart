@@ -4,7 +4,7 @@ import 'package:survey_flutter_ic/model/submit_survey_question_model.dart';
 
 part 'submit_survey_question_request.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SubmitSurveyQuestionRequest {
   final String id;
   final List<SubmitSurveyAnswerRequest> answers;

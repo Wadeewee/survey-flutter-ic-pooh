@@ -3,7 +3,7 @@ import 'package:survey_flutter_ic/api/request/submit_survey_question_request.dar
 
 part 'submit_survey_request.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SubmitSurveyRequest {
   final String surveyId;
   final List<SubmitSurveyQuestionRequest> questions;

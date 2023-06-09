@@ -216,4 +216,10 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
           )),
     );
   }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 }
