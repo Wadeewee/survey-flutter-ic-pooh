@@ -15,5 +15,7 @@
 
   "survey_question_submit_button": "Submit",
 
-  "survey_question_textarea_hint": "Your thoughts"
+  "survey_question_textarea_hint": "Your thoughts",
+
+  "survey_completion": "Thanks for taking the survey."
 }
