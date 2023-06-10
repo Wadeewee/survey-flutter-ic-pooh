@@ -1,6 +1,9 @@
 {
+  "alert_dialog_button_action_cancel": "Cancel",
   "alert_dialog_button_action_ok": "Ok",
+  "alert_dialog_button_action_yes": "Yes",
   "alert_dialog_title_error": "Error",
+  "alert_dialog_title_warning": "Warning!",
 
   "home_today": "Today",
 
@@ -12,6 +15,8 @@
 
   "survey_question_nps_lowest_description": "Not at all Likely",
   "survey_question_nps_highest_description": "Extremely Likely",
+
+  "survey_question_quit_confirmation_description": "Are you sure you want to quit the survey?",
 
   "survey_question_submit_button": "Submit",
 
