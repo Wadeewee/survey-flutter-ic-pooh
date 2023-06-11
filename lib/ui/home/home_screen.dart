@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:survey_flutter_ic/extension/context_extension.dart';
 import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/home/home_drawer.dart';
 import 'package:survey_flutter_ic/ui/home/home_header.dart';
 import 'package:survey_flutter_ic/ui/home/home_shimmer_loading.dart';
 import 'package:survey_flutter_ic/ui/home/home_survey_item.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_model.dart';
 import 'package:survey_flutter_ic/ui/home/home_view_state.dart';
 import 'package:survey_flutter_ic/ui/home/home_widget_id.dart';
+import 'package:survey_flutter_ic/widget/survey_alert_dialog.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,6 +25,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final PageController _pageController = PageController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
 
   @override
@@ -61,6 +65,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     List<SurveyModel> surveys,
   ) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: HomeDrawer(
+        // TODO: Bind the real data on integrate task
+        name: "PoohSuphawadee",
+        avatar: profileAvatar,
+        onSignOutPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => SurveyAlertDialog(
+              title: context.localization.alert_dialog_title_confirmation,
+              description:
+                  context.localization.home_sign_out_confirmation_description,
+              positiveActionText:
+                  context.localization.home_sign_out_button_action,
+              negativeActionText:
+                  context.localization.alert_dialog_button_action_cancel,
+              onPositiveActionClicked: () {
+                _scaffoldKey.currentState?.closeEndDrawer();
+                // TODO: Handle on integrate task
+              },
+            ),
+          );
+        },
+      ),
       body: RefreshIndicator(
         color: Colors.white,
         backgroundColor: Colors.white30,
@@ -73,17 +101,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Stack(
           children: [
             _buildPagerView(surveys),
-            SafeArea(
-              child: HomeHeader(
-                date: today,
-                avatar: profileAvatar,
-              ),
+            FractionallySizedBox(
+              heightFactor: 0.2,
+              child: ListView(),
             ),
             FractionallySizedBox(
               heightFactor: 0.3,
-              child: ListView(),
+              child: SafeArea(
+                child: HomeHeader(
+                  date: today,
+                  avatar: profileAvatar,
+                  onAvatarPressed: () =>
+                      _scaffoldKey.currentState?.openEndDrawer(),
+                ),
+              ),
             ),
-            if (surveys.isNotEmpty) _buildPagerIndicator(surveys)
+            if (surveys.isNotEmpty) _buildPagerIndicator(surveys),
           ],
         ),
       ),
@@ -135,5 +168,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         selectedColor: Colors.white,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

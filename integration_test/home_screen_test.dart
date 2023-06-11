@@ -22,6 +22,10 @@ void homeScreenTest() {
     late Finder titleText;
     late Finder descriptionText;
     late Finder nextButton;
+    late Finder signOutProfileName;
+    late Finder signOutProfileAvatar;
+    late Finder signOutDivider;
+    late Finder signOutTextButton;
 
     setUpAll(() async {
       await TestUtil.setupTestEnvironment();
@@ -36,6 +40,10 @@ void homeScreenTest() {
       titleText = find.byKey(HomeWidgetId.titleText);
       descriptionText = find.byKey(HomeWidgetId.descriptionText);
       nextButton = find.byKey(HomeWidgetId.nextButton);
+      signOutProfileName = find.byKey(HomeWidgetId.signOutProfileName);
+      signOutProfileAvatar = find.byKey(HomeWidgetId.signOutProfileAvatar);
+      signOutDivider = find.byKey(HomeWidgetId.signOutDivider);
+      signOutTextButton = find.byKey(HomeWidgetId.signOutTextButton);
 
       await FakeData.initDefault();
     });
@@ -111,6 +119,42 @@ void homeScreenTest() {
 
       await tester.pumpAndSettle();
       expect(find.byType(SurveyDetailScreen), findsOneWidget);
+    });
+
+    testWidgets("When clicking on avatar, it display Drawer widget correctly",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        TestUtil.pumpWidgetWithRoutePath(RoutePath.home.path),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(profileAvatar);
+
+      await tester.pumpAndSettle();
+      expect(signOutProfileName, findsOneWidget);
+      expect(signOutProfileAvatar, findsOneWidget);
+      expect(signOutDivider, findsOneWidget);
+      expect(signOutTextButton, findsOneWidget);
+    });
+
+    testWidgets(
+        "When clicking on logout text button, it display dialog correctly",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        TestUtil.pumpWidgetWithRoutePath(RoutePath.home.path),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(profileAvatar);
+
+      await tester.pumpAndSettle();
+      await tester.tap(signOutTextButton);
+
+      await tester.pumpAndSettle();
+      expect(find.text('Confirmation'), findsOneWidget);
+      expect(find.text('Are you sure you want to log out?'), findsOneWidget);
+      expect(find.text('Log out'), findsOneWidget);
+      expect(find.text('Cancel'), findsOneWidget);
     });
   });
 }

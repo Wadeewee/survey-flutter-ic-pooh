@@ -2,9 +2,13 @@
   "alert_dialog_button_action_cancel": "Cancel",
   "alert_dialog_button_action_ok": "Ok",
   "alert_dialog_button_action_yes": "Yes",
+  "alert_dialog_title_confirmation": "Confirmation",
   "alert_dialog_title_error": "Error",
   "alert_dialog_title_warning": "Warning!",
 
+  "home_sign_out": "Logout",
+  "home_sign_out_confirmation_description": "Are you sure you want to log out?",
+  "home_sign_out_button_action": "Log out",
   "home_today": "Today",
 
   "sign_in_email_label": "Email",
