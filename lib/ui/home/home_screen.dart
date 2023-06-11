@@ -81,7 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   context.localization.home_sign_out_button_action,
               negativeActionText:
                   context.localization.alert_dialog_button_action_cancel,
-              onPositiveActionClicked: () {
+              onPositiveActionPressed: () {
                 _scaffoldKey.currentState?.closeEndDrawer();
                 // TODO: Handle on integrate task
               },
