@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:survey_flutter_ic/model/profile_model.dart';
 import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
@@ -38,12 +38,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(isLoadingProvider).value ?? false;
     final today = ref.watch(todayProvider).value ?? '';
-    final profileAvatar = ref.watch(profileAvatarProvider).value ?? '';
+    final profile = ref.watch(profileProvider).value;
     final surveys = ref.watch(surveysProvider).value ?? [];
 
     ref.listen<HomeViewState>(homeViewModelProvider, (_, state) {
       state.maybeWhen(
-        error: (message) => showToastMessage(message),
+        navigateToSignInScreen: () => context.goNamed(RoutePath.signIn.name),
+        error: (message) {
+          showDialog(
+            context: context,
+            builder: (_) => SurveyAlertDialog(
+              title: context.localization.alert_dialog_title_error,
+              description: message,
+              positiveActionText:
+                  context.localization.alert_dialog_button_action_ok,
+            ),
+          );
+        },
         orElse: () {},
       );
     });
@@ -53,7 +64,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     } else {
       return _buildHomeScreenContent(
         today,
-        profileAvatar,
+        profile,
         surveys,
       );
     }
@@ -61,15 +72,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildHomeScreenContent(
     String today,
-    String profileAvatar,
+    ProfileModel? profile,
     List<SurveyModel> surveys,
   ) {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: HomeDrawer(
-        // TODO: Bind the real data on integrate task
-        name: "PoohSuphawadee",
-        avatar: profileAvatar,
+        name: profile?.name ?? '',
+        avatar: profile?.avatarUrl ?? '',
         onSignOutPressed: () {
           showDialog(
             context: context,
@@ -83,7 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   context.localization.alert_dialog_button_action_cancel,
               onPositiveActionPressed: () {
                 _scaffoldKey.currentState?.closeEndDrawer();
-                // TODO: Handle on integrate task
+                ref.read(homeViewModelProvider.notifier).signOut();
               },
             ),
           );
@@ -110,7 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: SafeArea(
                 child: HomeHeader(
                   date: today,
-                  avatar: profileAvatar,
+                  avatar: profile?.avatarUrl ?? '',
                   onAvatarPressed: () =>
                       _scaffoldKey.currentState?.openEndDrawer(),
                 ),
