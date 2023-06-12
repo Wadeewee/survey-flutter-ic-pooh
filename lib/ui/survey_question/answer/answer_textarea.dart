@@ -17,23 +17,21 @@ class AnswerTextArea extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController();
+    var text = '';
 
     ref.listen(surveyNextQuestionsProvider, (_, displayType) {
       if (displayType.value == DisplayType.textarea) {
         ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
               SubmitSurveyAnswerModel(
                 id: answers.first.id,
-                answer: controller.text,
+                answer: text,
               ),
             );
-        controller.clear();
       }
     });
 
     return Center(
       child: TextField(
-        controller: controller,
         style: const TextStyle(
           color: Colors.white,
           fontSize: fontSize17,
@@ -55,6 +53,8 @@ class AnswerTextArea extends ConsumerWidget {
         cursorColor: Colors.white,
         textInputAction: TextInputAction.done,
         maxLines: 10,
+        onChanged: (input) => text = input,
+        onSubmitted: (input) => text = input,
       ),
     );
   }

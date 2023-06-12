@@ -16,8 +16,7 @@ class AnswerForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controllers =
-        List.generate(answers.length, (_) => TextEditingController());
+    final texts = List.generate(answers.length, (_) => '');
 
     ref.listen(surveyNextQuestionsProvider, (_, displayType) {
       if (displayType.value == DisplayType.textfield) {
@@ -25,10 +24,9 @@ class AnswerForm extends ConsumerWidget {
           ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
                 SubmitSurveyAnswerModel(
                   id: answers[index].id,
-                  answer: controllers[index].text,
+                  answer: texts[index],
                 ),
               );
-          controllers[index].clear();
         }
       }
     });
@@ -38,7 +36,7 @@ class AnswerForm extends ConsumerWidget {
         shrinkWrap: true,
         itemCount: answers.length,
         itemBuilder: (_, index) {
-          return _buildTextFieldItem(index, controllers[index]);
+          return _buildTextFieldItem(index, texts);
         },
         separatorBuilder: (_, __) {
           return const SizedBox(height: space16);
@@ -49,10 +47,9 @@ class AnswerForm extends ConsumerWidget {
 
   Widget _buildTextFieldItem(
     int index,
-    TextEditingController controller,
+    List<String> texts,
   ) {
     return TextField(
-      controller: controller,
       style: const TextStyle(
         color: Colors.white,
         fontSize: fontSize17,
@@ -76,6 +73,8 @@ class AnswerForm extends ConsumerWidget {
       textInputAction: index == (answers.length - 1)
           ? TextInputAction.done
           : TextInputAction.next,
+      onChanged: (input) => texts[index] = input,
+      onSubmitted: (input) => texts[index] = input,
     );
   }
 
