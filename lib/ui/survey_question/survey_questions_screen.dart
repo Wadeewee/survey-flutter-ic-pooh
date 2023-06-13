@@ -53,7 +53,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
         error: (message) {
           showDialog(
             context: context,
-            builder: (context) => SurveyAlertDialog(
+            builder: (_) => SurveyAlertDialog(
               title: context.localization.alert_dialog_title_error,
               description: message,
               positiveActionText:
@@ -128,7 +128,22 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
         icon: Assets.images.icClose.svg(),
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
-        onPressed: () => context.pop(),
+        onPressed: () {
+          context.hideKeyboard();
+          showDialog(
+            context: context,
+            builder: (_) => SurveyAlertDialog(
+              title: context.localization.alert_dialog_title_warning,
+              description: context
+                  .localization.survey_question_quit_confirmation_description,
+              positiveActionText:
+                  context.localization.alert_dialog_button_action_yes,
+              negativeActionText:
+                  context.localization.alert_dialog_button_action_cancel,
+              onPositiveActionPressed: () => context.pop(),
+            ),
+          );
+        },
       ),
     );
   }

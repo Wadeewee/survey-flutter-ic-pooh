@@ -6,12 +6,16 @@ class SurveyAlertDialog extends StatelessWidget {
   final String title;
   final String description;
   final String positiveActionText;
+  final String? negativeActionText;
+  final VoidCallback? onPositiveActionPressed;
 
   const SurveyAlertDialog({
     super.key,
     required this.title,
     required this.description,
     required this.positiveActionText,
+    this.negativeActionText,
+    this.onPositiveActionPressed,
   });
 
   @override
@@ -34,9 +38,22 @@ class SurveyAlertDialog extends StatelessWidget {
         ),
       ),
       actions: <Widget>[
+        if (negativeActionText != null)
+          TextButton(
+            onPressed: () => context.pop(false),
+            child: Text(
+              negativeActionText ?? '',
+              style: const TextStyle(
+                color: Colors.blue,
+                fontSize: fontSize17,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
         TextButton(
           onPressed: () {
             context.pop(false);
+            onPositiveActionPressed?.call();
           },
           child: Text(
             positiveActionText,
