@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
 const _defaultSelectedNpsIndex = -1;
 const _maxAnswerChoices = 10;
@@ -25,6 +26,21 @@ class AnswerNps extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAnswerIndex = ref.watch(selectedNpsIndexProvider);
 
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: selectedAnswerIndex == _defaultSelectedNpsIndex
+              ? answers.first.id
+              : answers[selectedAnswerIndex].id,
+          answer: selectedAnswerIndex == _defaultSelectedNpsIndex
+              ? answers.first.text
+              : (selectedAnswerIndex + 1).toString(),
+        ),
+      ]);
+      ref.read(selectedNpsIndexProvider.notifier).state =
+          _defaultSelectedNpsIndex;
+    });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -45,8 +61,6 @@ class AnswerNps extends ConsumerWidget {
                   child: GestureDetector(
                     onTap: () {
                       ref.read(selectedNpsIndexProvider.notifier).state = index;
-                      // TODO: Trigger VM on Integration of submit task
-                      showToastMessage((index + 1).toString());
                     },
                     child: _buildItem(index, selectedAnswerIndex),
                   ),

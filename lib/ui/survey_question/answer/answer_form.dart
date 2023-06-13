@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
-class AnswerForm extends StatelessWidget {
+class AnswerForm extends ConsumerWidget {
   final List<SurveyAnswerModel> answers;
 
   const AnswerForm({
@@ -12,13 +14,30 @@ class AnswerForm extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final texts = List.generate(answers.length, (_) => '');
+
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      final List<SubmitSurveyAnswerModel> submitAnswers = [];
+      for (int index = 0; index < answers.length; index++) {
+        submitAnswers.add(
+          SubmitSurveyAnswerModel(
+            id: answers[index].id,
+            answer: texts[index],
+          ),
+        );
+      }
+      ref
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .saveAnswer(submitAnswers);
+    });
+
     return Center(
       child: ListView.separated(
         shrinkWrap: true,
         itemCount: answers.length,
         itemBuilder: (_, index) {
-          return _buildTextFieldItem(index);
+          return _buildTextFieldItem(index, texts);
         },
         separatorBuilder: (_, __) {
           return const SizedBox(height: space16);
@@ -27,7 +46,10 @@ class AnswerForm extends StatelessWidget {
     );
   }
 
-  Widget _buildTextFieldItem(int index) {
+  Widget _buildTextFieldItem(
+    int index,
+    List<String> texts,
+  ) {
     return TextField(
       style: const TextStyle(
         color: Colors.white,
@@ -52,13 +74,8 @@ class AnswerForm extends StatelessWidget {
       textInputAction: index == (answers.length - 1)
           ? TextInputAction.done
           : TextInputAction.next,
-      onChanged: (input) {
-        // TODO: Trigger VM on Integration of submit task
-      },
-      onSubmitted: (input) {
-        // TODO: Trigger VM on Integration of submit task
-        showToastMessage(input);
-      },
+      onChanged: (input) => texts[index] = input,
+      onSubmitted: (input) => texts[index] = input,
     );
   }
 
