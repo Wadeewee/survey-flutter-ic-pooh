@@ -140,5 +140,34 @@ void main() {
           .read(surveyQuestionsViewModelProvider.notifier)
           .submitSurvey("surveyId");
     });
+
+    test(
+        'When calling SubmitSurvey successfully, it returns navigateToCompletionScreen state',
+        () {
+      expect(
+        viewModel.stream,
+        emitsThrough(
+          const SurveyQuestionsViewState.navigateToCompletionScreen(),
+        ),
+      );
+
+      container
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .submitSurvey("surveyId");
+    });
+
+    test('When calling SubmitSurvey failed, it returns the error state', () {
+      when(mockSubmitSurveyUseCase.call(any)).thenAnswer((_) async => Failed(
+          UseCaseException(const NetworkExceptions.defaultError("Error"))));
+
+      expect(
+        viewModel.stream,
+        emitsThrough(const SurveyQuestionsViewState.error("Error")),
+      );
+
+      container
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .submitSurvey("surveyId");
+    });
   });
 }

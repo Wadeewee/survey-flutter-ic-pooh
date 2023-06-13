@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
+import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_question_item.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
 import 'package:survey_flutter_ic/widget/flat_button_text.dart';
+import 'package:survey_flutter_ic/widget/survey_alert_dialog.dart';
 
 class SurveyQuestionsScreen extends ConsumerStatefulWidget {
   final String surveyId;
@@ -46,7 +47,20 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     ref.listen<SurveyQuestionsViewState>(surveyQuestionsViewModelProvider,
         (_, state) {
       state.maybeWhen(
-        error: (message) => showToastMessage(message),
+        navigateToCompletionScreen: () {
+          context.goNamed(RoutePath.completion.name);
+        },
+        error: (message) {
+          showDialog(
+            context: context,
+            builder: (context) => SurveyAlertDialog(
+              title: context.localization.alert_dialog_title_error,
+              description: message,
+              positiveActionText:
+                  context.localization.alert_dialog_button_action_ok,
+            ),
+          );
+        },
         orElse: () {},
       );
     });
