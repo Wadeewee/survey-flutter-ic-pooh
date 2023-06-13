@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
-import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
@@ -18,16 +17,14 @@ class AnswerForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final texts = List.generate(answers.length, (_) => '');
 
-    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
-      if (displayType.value == DisplayType.textfield) {
-        for (int index = 0; index < answers.length; index++) {
-          ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-                SubmitSurveyAnswerModel(
-                  id: answers[index].id,
-                  answer: texts[index],
-                ),
-              );
-        }
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      for (int index = 0; index < answers.length; index++) {
+        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+              SubmitSurveyAnswerModel(
+                id: answers[index].id,
+                answer: texts[index],
+              ),
+            );
       }
     });
 

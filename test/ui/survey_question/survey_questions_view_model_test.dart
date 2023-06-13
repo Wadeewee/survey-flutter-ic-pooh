@@ -98,7 +98,7 @@ void main() {
     });
 
     test(
-        'When calling nextQuestion, it emit currentIndex and surveyNextQuestions',
+        'When calling nextQuestion with the first index, it emits only currentIndex',
         () {
       expect(
         viewModel.currentIndex,
@@ -107,9 +107,26 @@ void main() {
 
       expect(
         viewModel.surveyNextQuestions,
-        emitsThrough(DisplayType.unknown),
+        neverEmits(null),
       );
 
+      container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+    });
+
+    test(
+        'When calling nextQuestion with the next index, it emits currentIndex and surveyNextQuestions',
+        () async {
+      expectLater(
+        viewModel.currentIndex,
+        emitsThrough(2),
+      );
+
+      expectLater(
+        viewModel.surveyNextQuestions,
+        emitsDone,
+      );
+
+      container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
       container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
     });
 

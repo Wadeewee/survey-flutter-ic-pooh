@@ -54,10 +54,9 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
   Stream<List<SurveyQuestionModel>> get surveyQuestions =>
       _surveyQuestions.stream;
 
-  final BehaviorSubject<DisplayType> _surveyNextQuestions =
-      BehaviorSubject<DisplayType>.seeded(DisplayType.unknown);
+  final BehaviorSubject<void> _surveyNextQuestions = BehaviorSubject();
 
-  Stream<DisplayType> get surveyNextQuestions => _surveyNextQuestions.stream;
+  Stream<void> get surveyNextQuestions => _surveyNextQuestions.stream;
 
   void getSurveyDetail(String surveyId) async {
     _getSurveyDetailUseCase.call(surveyId).asStream().doOnListen(() {
@@ -78,13 +77,13 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
     final index = _currentIndex.hasValue ? _currentIndex.value : 0;
     _currentIndex.add(index + 1);
 
-    if (_surveyQuestions.hasValue) {
-      _surveyNextQuestions.add(_surveyQuestions.value[index].displayType);
+    if (_surveyQuestions.hasValue && index != 0) {
+      _surveyNextQuestions.add(null);
     }
   }
 
   void saveAnswer(SubmitSurveyAnswerModel answer) async {
-    final questionId = _surveyQuestions.value[_currentIndex.value].id;
+    final questionId = _surveyQuestions.value[_currentIndex.value - 1].id;
     final existingIndex = _submitSurveyQuestions.indexWhere(
       (question) => question.id == questionId,
     );

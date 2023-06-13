@@ -25,22 +25,20 @@ class AnswerMultipleChoices extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndexes = ref.watch(selectedChoicesIndexProvider);
 
-    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
-      if (displayType.value == DisplayType.choice) {
-        for (final selectedIndex in selectedIndexes) {
-          if (selectedIndex >= 0 && selectedIndex < answers.length) {
-            ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-                  SubmitSurveyAnswerModel(
-                    id: answers[selectedIndex].id,
-                    answer: answers[selectedIndex].text,
-                  ),
-                );
-          }
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      for (final selectedIndex in selectedIndexes) {
+        if (selectedIndex >= 0 && selectedIndex < answers.length) {
+          ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+                SubmitSurveyAnswerModel(
+                  id: answers[selectedIndex].id,
+                  answer: answers[selectedIndex].text,
+                ),
+              );
         }
-        ref.read(selectedChoicesIndexProvider.notifier).state = <int>[
-          _defaultSelectedChoiceIndex
-        ];
       }
+      ref.read(selectedChoicesIndexProvider.notifier).state = <int>[
+        _defaultSelectedChoiceIndex
+      ];
     });
 
     return Center(

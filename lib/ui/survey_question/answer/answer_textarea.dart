@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
 import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
-import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
@@ -19,15 +18,13 @@ class AnswerTextArea extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var text = '';
 
-    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
-      if (displayType.value == DisplayType.textarea) {
-        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-              SubmitSurveyAnswerModel(
-                id: answers.first.id,
-                answer: text,
-              ),
-            );
-      }
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+            SubmitSurveyAnswerModel(
+              id: answers.first.id,
+              answer: text,
+            ),
+          );
     });
 
     return Center(

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
 import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
-import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
@@ -27,19 +26,17 @@ class AnswerNps extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedAnswerIndex = ref.watch(selectedNpsIndexProvider);
 
-    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
-      if (displayType.value == DisplayType.nps) {
-        if (selectedAnswerIndex >= 0 && selectedAnswerIndex < answers.length) {
-          ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-                SubmitSurveyAnswerModel(
-                  id: answers[selectedAnswerIndex].id,
-                  answer: (selectedAnswerIndex + 1).toString(),
-                ),
-              );
-        }
-        ref.read(selectedNpsIndexProvider.notifier).state =
-            _defaultSelectedNpsIndex;
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      if (selectedAnswerIndex >= 0 && selectedAnswerIndex < answers.length) {
+        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+              SubmitSurveyAnswerModel(
+                id: answers[selectedAnswerIndex].id,
+                answer: (selectedAnswerIndex + 1).toString(),
+              ),
+            );
       }
+      ref.read(selectedNpsIndexProvider.notifier).state =
+          _defaultSelectedNpsIndex;
     });
 
     return Column(

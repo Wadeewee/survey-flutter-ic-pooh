@@ -3,7 +3,6 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
-import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
@@ -19,15 +18,13 @@ class AnswerDropdown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var selectedAnswerIndex = 0;
 
-    ref.listen(surveyNextQuestionsProvider, (_, displayType) {
-      if (displayType.value == DisplayType.dropdown) {
-        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-              SubmitSurveyAnswerModel(
-                id: answers[selectedAnswerIndex].id,
-                answer: answers[selectedAnswerIndex].text,
-              ),
-            );
-      }
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
+            SubmitSurveyAnswerModel(
+              id: answers[selectedAnswerIndex].id,
+              answer: answers[selectedAnswerIndex].text,
+            ),
+          );
     });
 
     return Center(
