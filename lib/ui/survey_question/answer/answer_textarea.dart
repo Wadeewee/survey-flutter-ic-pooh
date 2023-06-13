@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:survey_flutter_ic/extension/context_extension.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
-class AnswerTextArea extends StatelessWidget {
+class AnswerTextArea extends ConsumerWidget {
   final List<SurveyAnswerModel> answers;
 
   const AnswerTextArea({
@@ -13,7 +15,18 @@ class AnswerTextArea extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var text = '';
+
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: answers.first.id,
+          answer: text,
+        ),
+      ]);
+    });
+
     return Center(
       child: TextField(
         style: const TextStyle(
@@ -37,13 +50,8 @@ class AnswerTextArea extends StatelessWidget {
         cursorColor: Colors.white,
         textInputAction: TextInputAction.done,
         maxLines: 10,
-        onChanged: (input) => {
-          // TODO: Trigger VM on Integration of submit task
-        },
-        onSubmitted: (input) => {
-          // TODO: Trigger VM on Integration of submit task
-          showToastMessage(input)
-        },
+        onChanged: (input) => text = input,
+        onSubmitted: (input) => text = input,
       ),
     );
   }

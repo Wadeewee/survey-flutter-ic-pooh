@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
 const _defaultSelectedChoiceIndex = -1;
 
@@ -22,6 +24,24 @@ class AnswerMultipleChoices extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndexes = ref.watch(selectedChoicesIndexProvider);
+
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      final List<SubmitSurveyAnswerModel> submitAnswers = [];
+      for (final selectedIndex in selectedIndexes) {
+        if (selectedIndex >= 0 && selectedIndex < answers.length) {
+          submitAnswers.add(SubmitSurveyAnswerModel(
+            id: answers[selectedIndex].id,
+            answer: answers[selectedIndex].text,
+          ));
+        }
+      }
+      ref
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .saveAnswer(submitAnswers);
+      ref.read(selectedChoicesIndexProvider.notifier).state = <int>[
+        _defaultSelectedChoiceIndex
+      ];
+    });
 
     return Center(
       child: ListView.separated(
@@ -97,6 +117,5 @@ class AnswerMultipleChoices extends ConsumerWidget {
 
     ref.read(selectedChoicesIndexProvider.notifier).state =
         newSelectedChoicesIndex;
-    // TODO: Trigger VM on Integration of submit task and reset index to default
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:survey_flutter_ic/extension/context_extension.dart';
 import 'package:survey_flutter_ic/extension/toast_extension.dart';
 import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
@@ -11,6 +12,7 @@ import 'package:survey_flutter_ic/ui/survey_question/survey_question_item.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
 import 'package:survey_flutter_ic/widget/circle_next_button.dart';
+import 'package:survey_flutter_ic/widget/flat_button_text.dart';
 
 class SurveyQuestionsScreen extends ConsumerStatefulWidget {
   final String surveyId;
@@ -93,7 +95,9 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
                       currentIndex,
                     ),
                   ),
-                  _buildNextButton(currentIndex),
+                  (currentIndex + 1) == surveyQuestions.length
+                      ? _buildSubmitButton()
+                      : _buildNextButton(currentIndex),
                 ],
               ),
             ),
@@ -188,6 +192,21 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     );
   }
 
+  Widget _buildSubmitButton() {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: FlatButtonText(
+        text: context.localization.survey_question_submit_button,
+        isEnabled: true,
+        onPressed: () {
+          ref
+              .read(surveyQuestionsViewModelProvider.notifier)
+              .submitSurvey(widget.surveyId);
+        },
+      ),
+    );
+  }
+
   Widget _buildLoadingIndicator() {
     return Center(
       child: Container(
@@ -196,5 +215,11 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
             color: Colors.white,
           )),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

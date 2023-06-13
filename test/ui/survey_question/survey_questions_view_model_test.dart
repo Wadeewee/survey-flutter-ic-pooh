@@ -13,10 +13,11 @@ import '../../mocks/generate_mocks.mocks.dart';
 void main() {
   group('SurveyQuestionsViewModel', () {
     late MockGetSurveyDetailUseCase mockGetSurveyDetailUseCase;
+    late MockSubmitSurveyUseCase mockSubmitSurveyUseCase;
     late SurveyQuestionsViewModel viewModel;
     late ProviderContainer container;
 
-    const SurveyDetailModel surveyDetail = SurveyDetailModel(
+    const surveyDetail = SurveyDetailModel(
       id: "id",
       questions: <SurveyQuestionModel>[
         SurveyQuestionModel(
@@ -35,17 +36,22 @@ void main() {
 
     setUp(() async {
       mockGetSurveyDetailUseCase = MockGetSurveyDetailUseCase();
+      mockSubmitSurveyUseCase = MockSubmitSurveyUseCase();
       container = ProviderContainer(overrides: [
-        surveyQuestionsViewModelProvider
-            .overrideWith((ref) => SurveyQuestionsViewModel(
-                  mockGetSurveyDetailUseCase,
-                ))
+        surveyQuestionsViewModelProvider.overrideWith(
+          (ref) => SurveyQuestionsViewModel(
+            mockGetSurveyDetailUseCase,
+            mockSubmitSurveyUseCase,
+          ),
+        )
       ]);
       viewModel = container.read(surveyQuestionsViewModelProvider.notifier);
       addTearDown(() => container.dispose());
 
       when(mockGetSurveyDetailUseCase.call(any))
           .thenAnswer((_) async => Success(surveyDetail));
+      when(mockSubmitSurveyUseCase.call(any))
+          .thenAnswer((_) async => Success(null));
     });
 
     test('When initializing SurveyQuestionsViewModel, its state is Init', () {
@@ -91,13 +97,48 @@ void main() {
           .getSurveyDetail("surveyId");
     });
 
-    test('When calling nextQuestion, it emits currentIndex', () {
+    test(
+        'When calling nextQuestion with the first index, it emits only currentIndex',
+        () {
       expect(
         viewModel.currentIndex,
         emitsThrough(1),
       );
 
+      expect(
+        viewModel.surveyNextQuestions,
+        neverEmits(null),
+      );
+
       container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+    });
+
+    test(
+        'When calling nextQuestion with the next index, it emits currentIndex and surveyNextQuestions',
+        () async {
+      expectLater(
+        viewModel.currentIndex,
+        emitsThrough(2),
+      );
+
+      expectLater(
+        viewModel.surveyNextQuestions,
+        emitsDone,
+      );
+
+      container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+      container.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
+    });
+
+    test('When calling SubmitSurvey, it emits isLoading properly', () {
+      expect(
+        viewModel.isLoading,
+        emitsInOrder([true, false]),
+      );
+
+      container
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .submitSurvey("surveyId");
     });
   });
 }
