@@ -19,12 +19,12 @@ class AnswerTextArea extends ConsumerWidget {
     var text = '';
 
     ref.listen(surveyNextQuestionsProvider, (_, __) {
-      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-            SubmitSurveyAnswerModel(
-              id: answers.first.id,
-              answer: text,
-            ),
-          );
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: answers.first.id,
+          answer: text,
+        ),
+      ]);
     });
 
     return Center(

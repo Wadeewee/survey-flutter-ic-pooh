@@ -28,12 +28,12 @@ class AnswerEmojiRating extends ConsumerWidget {
     final selectedAnswerIndex = ref.watch(selectedEmojiIndexProvider);
 
     ref.listen(surveyNextQuestionsProvider, (_, __) {
-      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-            SubmitSurveyAnswerModel(
-              id: answers[selectedAnswerIndex].id,
-              answer: answers[selectedAnswerIndex].text,
-            ),
-          );
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: answers[selectedAnswerIndex].id,
+          answer: answers[selectedAnswerIndex].text,
+        ),
+      ]);
       ref.read(selectedEmojiIndexProvider.notifier).state =
           _defaultSelectedEmojiIndex;
     });

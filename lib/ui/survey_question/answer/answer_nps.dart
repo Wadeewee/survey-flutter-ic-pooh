@@ -27,14 +27,16 @@ class AnswerNps extends ConsumerWidget {
     final selectedAnswerIndex = ref.watch(selectedNpsIndexProvider);
 
     ref.listen(surveyNextQuestionsProvider, (_, __) {
-      if (selectedAnswerIndex >= 0 && selectedAnswerIndex < answers.length) {
-        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-              SubmitSurveyAnswerModel(
-                id: answers[selectedAnswerIndex].id,
-                answer: (selectedAnswerIndex + 1).toString(),
-              ),
-            );
-      }
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: selectedAnswerIndex == _defaultSelectedNpsIndex
+              ? answers.first.id
+              : answers[selectedAnswerIndex].id,
+          answer: selectedAnswerIndex == _defaultSelectedNpsIndex
+              ? answers.first.text
+              : (selectedAnswerIndex + 1).toString(),
+        ),
+      ]);
       ref.read(selectedNpsIndexProvider.notifier).state =
           _defaultSelectedNpsIndex;
     });

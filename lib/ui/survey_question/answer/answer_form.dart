@@ -18,14 +18,18 @@ class AnswerForm extends ConsumerWidget {
     final texts = List.generate(answers.length, (_) => '');
 
     ref.listen(surveyNextQuestionsProvider, (_, __) {
+      final List<SubmitSurveyAnswerModel> submitAnswers = [];
       for (int index = 0; index < answers.length; index++) {
-        ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-              SubmitSurveyAnswerModel(
-                id: answers[index].id,
-                answer: texts[index],
-              ),
-            );
+        submitAnswers.add(
+          SubmitSurveyAnswerModel(
+            id: answers[index].id,
+            answer: texts[index],
+          ),
+        );
       }
+      ref
+          .read(surveyQuestionsViewModelProvider.notifier)
+          .saveAnswer(submitAnswers);
     });
 
     return Center(

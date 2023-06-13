@@ -82,22 +82,14 @@ class SurveyQuestionsViewModel extends StateNotifier<SurveyQuestionsViewState> {
     }
   }
 
-  void saveAnswer(SubmitSurveyAnswerModel answer) async {
+  void saveAnswer(List<SubmitSurveyAnswerModel> answers) async {
     final questionId = _surveyQuestions.value[_currentIndex.value - 1].id;
-    final existingIndex = _submitSurveyQuestions.indexWhere(
-      (question) => question.id == questionId,
+    _submitSurveyQuestions.add(
+      SubmitSurveyQuestionModel(
+        id: questionId,
+        answers: answers,
+      ),
     );
-
-    if (existingIndex >= 0) {
-      _submitSurveyQuestions[existingIndex].answers.add(answer);
-    } else {
-      _submitSurveyQuestions.add(
-        SubmitSurveyQuestionModel(
-          id: questionId,
-          answers: [answer],
-        ),
-      );
-    }
   }
 
   void submitSurvey(String surveyId) async {

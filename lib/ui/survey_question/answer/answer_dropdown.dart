@@ -19,12 +19,12 @@ class AnswerDropdown extends ConsumerWidget {
     var selectedAnswerIndex = 0;
 
     ref.listen(surveyNextQuestionsProvider, (_, __) {
-      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer(
-            SubmitSurveyAnswerModel(
-              id: answers[selectedAnswerIndex].id,
-              answer: answers[selectedAnswerIndex].text,
-            ),
-          );
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: answers[selectedAnswerIndex].id,
+          answer: answers[selectedAnswerIndex].text,
+        ),
+      ]);
     });
 
     return Center(
