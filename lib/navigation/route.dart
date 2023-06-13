@@ -4,6 +4,7 @@ import 'package:survey_flutter_ic/model/survey_model.dart';
 import 'package:survey_flutter_ic/ui/home/home_screen.dart';
 import 'package:survey_flutter_ic/ui/signin/sign_in_screen.dart';
 import 'package:survey_flutter_ic/ui/splash/splash_screen.dart';
+import 'package:survey_flutter_ic/ui/survey_completion/survey_completion_screen.dart';
 import 'package:survey_flutter_ic/ui/survey_detail/survey_detail_screen.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_screen.dart';
 
@@ -14,7 +15,8 @@ enum RoutePath {
   home('/home', 'home'),
   signIn('/sign_in', 'sign_in'),
   surveyDetail('survey_detail', 'survey_detail'),
-  surveyQuestions('survey_questions/:$surveyIdKey', 'survey_questions');
+  surveyQuestions('survey_questions/:$surveyIdKey', 'survey_questions'),
+  completion('completion', 'completion');
 
   const RoutePath(this.path, this.name);
 
@@ -60,6 +62,11 @@ class AppRouter {
                 builder: (_, state) => SurveyQuestionsScreen(
                   surveyId: (state.params[surveyIdKey] as String),
                 ),
+              ),
+              GoRoute(
+                name: RoutePath.completion.name,
+                path: RoutePath.completion.path,
+                builder: (_, __) => const SurveyCompletionScreen(),
               ),
             ],
           ),
