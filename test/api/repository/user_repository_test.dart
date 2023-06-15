@@ -29,6 +29,7 @@ void main() {
       final response = ProfileResponse(
         id: 'id',
         type: 'type',
+        name: 'name',
         email: 'email',
         avatarUrl: 'avatarUrl',
       );

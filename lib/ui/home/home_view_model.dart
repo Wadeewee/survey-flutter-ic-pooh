@@ -9,6 +9,7 @@ import 'package:survey_flutter_ic/usecase/base/base_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_cached_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_and_cache_surveys_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
+import 'package:survey_flutter_ic/usecase/sign_out_use_case.dart';
 
 const _defaultFirstPageIndex = 1;
 const _defaultPageSize = 10;
@@ -19,6 +20,7 @@ final homeViewModelProvider =
               getIt.get<GetProfileUseCase>(),
               getIt.get<GetAndCacheSurveysUseCase>(),
               getIt.get<GetCachedSurveysUseCase>(),
+              getIt.get<SignOutUseCase>(),
             ));
 
 final isLoadingProvider = StreamProvider.autoDispose(
@@ -27,8 +29,8 @@ final isLoadingProvider = StreamProvider.autoDispose(
 final todayProvider = StreamProvider.autoDispose(
     (ref) => ref.watch(homeViewModelProvider.notifier).today);
 
-final profileAvatarProvider = StreamProvider.autoDispose(
-    (ref) => ref.watch(homeViewModelProvider.notifier).profileAvatar);
+final profileProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(homeViewModelProvider.notifier).profile);
 
 final surveysProvider = StreamProvider.autoDispose(
     (ref) => ref.watch(homeViewModelProvider.notifier).surveys);
@@ -37,11 +39,13 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
   final GetProfileUseCase _getProfileUseCase;
   final GetAndCacheSurveysUseCase _getAndCacheSurveysUseCase;
   final GetCachedSurveysUseCase _getCachedSurveysUseCase;
+  final SignOutUseCase _signOutUseCase;
 
   HomeViewModel(
     this._getProfileUseCase,
     this._getAndCacheSurveysUseCase,
     this._getCachedSurveysUseCase,
+    this._signOutUseCase,
   ) : super(const HomeViewState.init());
 
   final BehaviorSubject<bool> _isLoading = BehaviorSubject();
@@ -52,9 +56,9 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
 
   Stream<String> get today => _today.stream;
 
-  final BehaviorSubject<String> _profileAvatar = BehaviorSubject();
+  final BehaviorSubject<ProfileModel> _profile = BehaviorSubject();
 
-  Stream<String> get profileAvatar => _profileAvatar.stream;
+  Stream<ProfileModel> get profile => _profile.stream;
 
   final BehaviorSubject<List<SurveyModel>> _surveys = BehaviorSubject();
 
@@ -71,7 +75,7 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
           _today.add(DateTime.now().getFormattedString());
 
           if (profileResult is Success<ProfileModel>) {
-            _profileAvatar.add(profileResult.value.avatarUrl);
+            _profile.add(profileResult.value);
           }
 
           handleSurveysResult(surveysResult, isCachedStream: true);
@@ -118,11 +122,26 @@ class HomeViewModel extends StateNotifier<HomeViewState> {
     }
   }
 
+  void signOut() {
+    _signOutUseCase.call().asStream().doOnListen(() {
+      _isLoading.add(true);
+    }).doOnDone(() {
+      _isLoading.add(false);
+    }).listen((result) {
+      if (result is Success<void>) {
+        state = const HomeViewState.navigateToSignInScreen();
+      } else {
+        final error = result as Failed<void>;
+        state = HomeViewState.error(error.getErrorMessage());
+      }
+    });
+  }
+
   @override
   void dispose() async {
     await _isLoading.close();
     await _today.close();
-    await _profileAvatar.close();
+    await _profile.close();
     await _surveys.close();
     super.dispose();
   }

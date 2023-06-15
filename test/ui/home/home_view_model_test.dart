@@ -16,10 +16,14 @@ void main() {
     late MockGetProfileUseCase mockGetProfileUseCase;
     late MockGetAndCacheSurveysUseCase mockGetAndCacheSurveysUseCase;
     late MockGetCachedSurveysUseCase mockGetCachedSurveysUseCase;
+    late MockSignOutUseCase mockSignOutUseCase;
     late HomeViewModel viewModel;
     late ProviderContainer container;
 
-    const profile = ProfileModel(avatarUrl: "avatarUrl");
+    const profile = ProfileModel(
+      avatarUrl: 'avatarUrl',
+      name: 'name',
+    );
 
     final List<SurveyModel> surveys = <SurveyModel>[
       const SurveyModel(
@@ -38,12 +42,15 @@ void main() {
       mockGetProfileUseCase = MockGetProfileUseCase();
       mockGetAndCacheSurveysUseCase = MockGetAndCacheSurveysUseCase();
       mockGetCachedSurveysUseCase = MockGetCachedSurveysUseCase();
+      mockSignOutUseCase = MockSignOutUseCase();
 
       container = ProviderContainer(overrides: [
         homeViewModelProvider.overrideWith((ref) => HomeViewModel(
-            mockGetProfileUseCase,
-            mockGetAndCacheSurveysUseCase,
-            mockGetCachedSurveysUseCase))
+              mockGetProfileUseCase,
+              mockGetAndCacheSurveysUseCase,
+              mockGetCachedSurveysUseCase,
+              mockSignOutUseCase,
+            ))
       ]);
       viewModel = container.read(homeViewModelProvider.notifier);
       addTearDown(() => container.dispose());
@@ -54,6 +61,7 @@ void main() {
           .thenAnswer((_) async => Success(surveys));
       when(mockGetCachedSurveysUseCase.call())
           .thenAnswer((_) async => Success(surveys));
+      when(mockSignOutUseCase.call()).thenAnswer((_) async => Success(null));
     });
 
     test('When initializing HomeViewModel, its state is Init', () {
@@ -79,7 +87,7 @@ void main() {
     });
 
     test('When calling getProfile successfully, it emits avatarUrl', () {
-      expect(viewModel.profileAvatar, emitsThrough('avatarUrl'));
+      expect(viewModel.profile, emitsThrough(profile));
 
       container.read(homeViewModelProvider.notifier).loadData();
     });
@@ -88,7 +96,7 @@ void main() {
       when(mockGetProfileUseCase.call()).thenAnswer((_) async => Failed(
           UseCaseException(const NetworkExceptions.defaultError("Error"))));
 
-      expect(viewModel.profileAvatar, neverEmits(profile));
+      expect(viewModel.profile, neverEmits(profile));
 
       container.read(homeViewModelProvider.notifier).loadData();
     });
@@ -159,6 +167,43 @@ void main() {
           ));
 
       container.read(homeViewModelProvider.notifier).loadData(isRefresh: true);
+    });
+
+    test('When calling signOut, it emits isLoading properly', () {
+      expect(
+        viewModel.isLoading,
+        emitsInOrder([true, false]),
+      );
+
+      container.read(homeViewModelProvider.notifier).signOut();
+    });
+
+    test(
+        'When calling signOut successfully, it returns navigateToSignInScreen state',
+        () {
+      expect(
+        viewModel.stream,
+        emitsThrough(
+          const HomeViewState.navigateToSignInScreen(),
+        ),
+      );
+
+      container.read(homeViewModelProvider.notifier).signOut();
+    });
+
+    test('When calling signOut failed, it returns navigateToSignInScreen state',
+        () {
+      when(mockSignOutUseCase.call()).thenAnswer((_) async => Failed(
+          UseCaseException(const NetworkExceptions.defaultError("Error"))));
+
+      expect(
+        viewModel.stream,
+        emitsThrough(
+          const HomeViewState.error("Error"),
+        ),
+      );
+
+      container.read(homeViewModelProvider.notifier).signOut();
     });
   });
 }

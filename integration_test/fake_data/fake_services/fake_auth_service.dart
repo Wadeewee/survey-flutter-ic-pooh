@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:survey_flutter_ic/api/request/sign_in_request.dart';
+import 'package:survey_flutter_ic/api/request/sign_out_request.dart';
 import 'package:survey_flutter_ic/api/response/auth_response.dart';
 import 'package:survey_flutter_ic/api/service/auth_service.dart';
 
@@ -17,5 +18,15 @@ class FakeAuthService extends Fake implements AuthService {
       throw generateDioError(response.statusCode);
     }
     return AuthResponse.fromJson(response.json);
+  }
+
+  @override
+  Future<void> signOut(
+    @Body() SignOutRequest body,
+  ) async {
+    final response = FakeData.apiAndResponse[keySignIn]!;
+    if (response.statusCode != 200) {
+      throw generateDioError(response.statusCode);
+    }
   }
 }

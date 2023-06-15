@@ -7,12 +7,14 @@ part 'profile_response.g.dart';
 class ProfileResponse {
   final String id;
   final String type;
+  final String name;
   final String email;
   final String avatarUrl;
 
   ProfileResponse({
     required this.id,
     required this.type,
+    required this.name,
     required this.email,
     required this.avatarUrl,
   });
