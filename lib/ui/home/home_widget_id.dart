@@ -11,4 +11,8 @@ class HomeWidgetId {
   static const titleText = Key('titleText');
   static const descriptionText = Key('descriptionText');
   static const nextButton = Key('nextButton');
+  static const signOutProfileName = Key('signOutProfileName');
+  static const signOutProfileAvatar = Key('signOutProfileAvatar');
+  static const signOutDivider = Key('signOutDivider');
+  static const signOutTextButton = Key('signOutTextButton');
 }

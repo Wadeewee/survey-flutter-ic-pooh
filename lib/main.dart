@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:survey_flutter_ic/database/persistence/hive_persistence.dart';
 import 'package:survey_flutter_ic/di/provider/di.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
@@ -14,16 +15,21 @@ void main() async {
   await FlutterConfig.loadEnvVariables();
   await initHivePersistence();
   await configureInjection();
-  runApp(const ProviderScope(child: MyApp()));
+
+  final router = getIt.get<AppRouter>().router();
+  runApp(ProviderScope(child: MyApp(router: router)));
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final GoRouter router;
+
+  const MyApp({
+    Key? key,
+    required this.router,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = getIt.get<AppRouter>().router();
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: MaterialApp.router(
