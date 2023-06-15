@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:survey_flutter_ic/api/request/sign_out_request.dart';
 
 import '../../env.dart';
 import '../../model/auth_model.dart';
@@ -14,6 +15,10 @@ abstract class AuthRepository {
   Future<AuthModel> signIn({
     required String email,
     required String password,
+  });
+
+  Future<void> signOut({
+    required String token,
   });
 
   Future<AuthModel> refreshToken({
@@ -43,6 +48,21 @@ class AuthRepositoryImpl extends AuthRepository {
         ),
       );
       return AuthModel.fromResponse(response);
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<void> signOut({required String token}) async {
+    try {
+      await _authService.signOut(
+        SignOutRequest(
+          token: token,
+          clientId: Env.clientId,
+          clientSecret: Env.clientSecret,
+        ),
+      );
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
