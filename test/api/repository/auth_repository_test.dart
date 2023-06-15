@@ -17,6 +17,14 @@ void main() {
     late MockAuthService mockAuthService;
     late AuthRepository repository;
 
+    final response = AuthResponse(
+      accessToken: 'accessToken',
+      tokenType: 'tokenType',
+      expiresIn: 0,
+      refreshToken: 'refreshToken',
+      createdAt: 0,
+    );
+
     setUp(() {
       mockAuthService = MockAuthService();
       repository = AuthRepositoryImpl(mockAuthService);
@@ -25,14 +33,6 @@ void main() {
     test(
         'When calling signIn successfully, it emits the corresponding AuthModel',
         () async {
-      final response = AuthResponse(
-        accessToken: 'accessToken',
-        tokenType: 'tokenType',
-        expiresIn: 0,
-        refreshToken: 'refreshToken',
-        createdAt: 0,
-      );
-
       when(mockAuthService.signIn(any)).thenAnswer((_) async => response);
 
       final result = await repository.signIn(
@@ -48,6 +48,45 @@ void main() {
       when(mockAuthService.signIn(any)).thenThrow(MockDioError());
 
       result() => repository.signIn(email: 'email', password: 'password');
+
+      expect(result, throwsA(isA<NetworkExceptions>()));
+    });
+
+    test('When calling signOut successfully, it returns empty result',
+        () async {
+      when(mockAuthService.signOut(any)).thenAnswer((_) async => (null));
+
+      result() => repository.signOut(token: 'token');
+
+      expect(() async => result, isA<void>());
+    });
+
+    test('When calling signOut failed, it returns NetworkExceptions error',
+        () async {
+      when(mockAuthService.signOut(any)).thenThrow(MockDioError());
+
+      result() => repository.signOut(token: 'token');
+
+      expect(result, throwsA(isA<NetworkExceptions>()));
+    });
+
+    test(
+        'When calling refreshToken successfully, it emits the corresponding AuthModel',
+        () async {
+      when(mockAuthService.refreshToken(any)).thenAnswer((_) async => response);
+
+      final result = await repository.refreshToken(
+        refreshToken: 'refreshToken',
+      );
+
+      expect(result, AuthModel.fromResponse(response));
+    });
+
+    test('When calling refreshToken failed, it returns NetworkExceptions error',
+        () async {
+      when(mockAuthService.refreshToken(any)).thenThrow(MockDioError());
+
+      result() => repository.refreshToken(refreshToken: 'refreshToken');
 
       expect(result, throwsA(isA<NetworkExceptions>()));
     });
