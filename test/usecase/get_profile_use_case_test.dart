@@ -21,6 +21,7 @@ void main() {
         () async {
       const profileModel = ProfileModel(
         avatarUrl: 'avatarUrl',
+        name: 'name',
       );
 
       when(mockRepository.getProfile()).thenAnswer((_) async => profileModel);
