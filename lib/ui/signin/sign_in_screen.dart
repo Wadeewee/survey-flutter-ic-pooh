@@ -100,7 +100,7 @@ class SignInScreen extends ConsumerWidget {
           visible: isLoading,
           child: Container(
               margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
-              child: const CircularProgressIndicator()),
+              child: const CircularProgressIndicator(color: Colors.white)),
         ),
       );
     });
