@@ -8,6 +8,7 @@ import 'package:survey_flutter_ic/gen/assets.gen.dart';
 import 'package:survey_flutter_ic/model/survey_question_model.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_question_id.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_question_item.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_state.dart';
@@ -125,6 +126,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     return Align(
       alignment: Alignment.topRight,
       child: IconButton(
+        key: SurveyQuestionWidgetId.closeButton,
         icon: Assets.images.icClose.svg(),
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
@@ -153,6 +155,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     double coverImageOpacity,
   ) {
     return Container(
+      key: SurveyQuestionWidgetId.coverImageUrl,
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
@@ -177,6 +180,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     int totalQuestions,
   ) {
     return Text(
+      key: SurveyQuestionWidgetId.questionsIndicator,
       "${currentIndex + 1}/$totalQuestions",
       style: TextStyle(
         color: Colors.white.withOpacity(0.7),
@@ -209,6 +213,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     return Align(
       alignment: Alignment.bottomRight,
       child: CircleNextButton(
+        key: SurveyQuestionWidgetId.nextQuestionButton,
         onPressed: () {
           ref.read(surveyQuestionsViewModelProvider.notifier).nextQuestion();
           _pageController.animateToPage(
@@ -225,6 +230,7 @@ class _SurveyQuestionsState extends ConsumerState<SurveyQuestionsScreen> {
     return Align(
       alignment: Alignment.bottomRight,
       child: FlatButtonText(
+        key: SurveyQuestionWidgetId.submitButton,
         text: context.localization.survey_question_submit_button,
         isEnabled: true,
         onPressed: () {
