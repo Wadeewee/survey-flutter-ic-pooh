@@ -15,6 +15,8 @@ import 'package:survey_flutter_ic/usecase/get_profile_use_case.dart';
 import 'package:survey_flutter_ic/usecase/get_survey_detail_use_case.dart';
 import 'package:survey_flutter_ic/usecase/is_authorized_use_case.dart';
 import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
+import 'package:survey_flutter_ic/usecase/sign_out_use_case.dart';
+import 'package:survey_flutter_ic/usecase/submit_survey_use_case.dart';
 
 @GenerateMocks([
   AuthService,
@@ -33,6 +35,8 @@ import 'package:survey_flutter_ic/usecase/sign_in_use_case.dart';
   Box,
   IsAuthorizedUseCase,
   GetSurveyDetailUseCase,
+  SubmitSurveyUseCase,
+  SignOutUseCase,
 ])
 main() {
   // empty class to generate mock repository classes

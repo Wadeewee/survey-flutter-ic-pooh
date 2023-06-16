@@ -6,5 +6,8 @@ part 'home_view_state.freezed.dart';
 class HomeViewState with _$HomeViewState {
   const factory HomeViewState.init() = _Init;
 
+  const factory HomeViewState.navigateToSignInScreen() =
+      _NavigateToSignInScreen;
+
   const factory HomeViewState.error(String message) = _Error;
 }

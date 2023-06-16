@@ -8,7 +8,6 @@ import 'package:survey_flutter_ic/api/service/survey_service.dart';
 import 'package:survey_flutter_ic/api/service/user_service.dart';
 import 'package:survey_flutter_ic/database/persistence/hive_persistence.dart';
 import 'package:survey_flutter_ic/di/provider/di.dart';
-import 'package:survey_flutter_ic/main.dart';
 import 'package:survey_flutter_ic/navigation/route.dart';
 
 import '../fake_data/fake_services/fake_auth_service.dart';
@@ -16,13 +15,6 @@ import '../fake_data/fake_services/fake_survey_service.dart';
 import '../fake_data/fake_services/fake_user_service.dart';
 
 class TestUtil {
-  /// This is useful when we test the whole app with the real configs(styling,
-  /// localization, routes, etc)
-  static Widget pumpWidgetWithRealApp(String initialRoute) {
-    _initDependencies();
-    return const MyApp();
-  }
-
   /// We normally use this function to test a specific [widget] without
   /// considering much about theming.
   static Widget pumpWidgetWithShellApp(Widget widget) {

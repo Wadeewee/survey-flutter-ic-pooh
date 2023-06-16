@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:survey_flutter_ic/extension/toast_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:survey_flutter_ic/model/submit_survey_answer_model.dart';
 import 'package:survey_flutter_ic/model/survey_answer_model.dart';
 import 'package:survey_flutter_ic/theme/dimens.dart';
+import 'package:survey_flutter_ic/ui/survey_question/survey_questions_view_model.dart';
 
-class AnswerDropdown extends StatelessWidget {
+class AnswerDropdown extends ConsumerWidget {
   final List<SurveyAnswerModel> answers;
 
   const AnswerDropdown({
@@ -13,7 +15,18 @@ class AnswerDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var selectedAnswerIndex = 0;
+
+    ref.listen(surveyNextQuestionsProvider, (_, __) {
+      ref.read(surveyQuestionsViewModelProvider.notifier).saveAnswer([
+        SubmitSurveyAnswerModel(
+          id: answers[selectedAnswerIndex].id,
+          answer: answers[selectedAnswerIndex].text,
+        ),
+      ]);
+    });
+
     return Center(
       child: Picker(
         adapter: PickerDataAdapter<String>(
@@ -48,8 +61,7 @@ class AnswerDropdown extends StatelessWidget {
         itemExtent: dropdownItemHeight,
         hideHeader: true,
         onSelect: (picker, index, selected) {
-          // TODO: Trigger VM on Integration of submit task
-          showToastMessage(answers[selected.first].text);
+          selectedAnswerIndex = selected.first;
         },
       ).makePicker(),
     );

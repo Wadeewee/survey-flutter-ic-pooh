@@ -20,8 +20,11 @@ class FakeResponseModel extends Equatable {
 }
 
 const String keySignIn = 'signIn';
+const String keySignOut = 'signOut';
 const String keyUserProfile = 'userProfile';
 const String keySurveys = 'surveys';
+const String keySurveyDetail = 'surveyDetail';
+const String keySurveySubmit = 'surveySubmit';
 
 class FakeData {
   FakeData._();
@@ -46,6 +49,21 @@ class FakeData {
         200,
         await FileUtil.loadFile(
             'test_resource/fake_response/fake_surveys_response.json'),
+      ),
+      keySignOut: FakeResponseModel(
+        200,
+        await FileUtil.loadFile(
+            'test_resource/fake_response/fake_sign_out_response.json'),
+      ),
+      keySurveyDetail: FakeResponseModel(
+        200,
+        await FileUtil.loadFile(
+            'test_resource/fake_response/fake_survey_detail_response.json'),
+      ),
+      keySurveySubmit: FakeResponseModel(
+        200,
+        await FileUtil.loadFile(
+            'test_resource/fake_response/fake_survey_submit_response.json'),
       ),
     });
   }
